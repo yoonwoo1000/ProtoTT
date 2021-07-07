@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/login_layout"
-        android:layout_marginBottom="-1dp">
+        android:layout_marginBottom="20dp">
 
         <ImageView
             android:id="@+id/ivLogo"
@@ -20,7 +20,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="50dp"
+
             android:contentDescription="@string/app_name"
             app:srcCompat="@android:drawable/btn_star_big_on" />
     </LinearLayout>
@@ -37,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
         android:gravity="bottom"
         android:orientation="vertical">
 
@@ -61,14 +62,25 @@
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnSignin"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="Sign in"
+            android:textColor="@color/white" />
+
+
+        <Button
+            android:id="@+id/btnSignup"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="35dp"
-            android:text="Login"
+            android:text="Sign up"
             android:textColor="@color/white" />
 
         <Button

@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    @Override
+   /* @Override
     public void onStart() {
         super.onStart();
         // User Check
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             reload();
         }
     }
-
+*/
 
 
 

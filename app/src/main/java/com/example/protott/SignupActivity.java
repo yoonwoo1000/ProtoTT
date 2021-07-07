@@ -58,6 +58,8 @@ public class SignupActivity extends AppCompatActivity {
 
 
     }
+
+
        private void createAccount() {
 
 
@@ -73,6 +75,7 @@ public class SignupActivity extends AppCompatActivity {
                             Toast.makeText(SignupActivity.this, "Success",Toast.LENGTH_SHORT).show();
                             FirebaseUser user = Auth.getCurrentUser();
 
+                            SignupSuccess();
 
 
                         } else {
@@ -83,6 +86,12 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void SignupSuccess()
+    {
+        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     }

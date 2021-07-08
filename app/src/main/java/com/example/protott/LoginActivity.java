@@ -59,19 +59,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (notEmpty())
                 {
                     signIn(id,password);
+
                 }
                 else
                     {
                         Toast.makeText(LoginActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
                     }
-
-
-
-
-
-
-
-
 
 
             }
@@ -117,6 +110,15 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void updateUI(FirebaseUser user) {
+
+        if(user != null)
+        {
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
+    }
+
     /*private void sendEmailVerification() {
         // Email 濡??뺤씤 硫붿씪
 
@@ -154,14 +156,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void updateUI(FirebaseUser user) {
-        //Login ?깃났??硫붿씤?붾㈃
-        if(user != null)
-        {
-            startActivity(new Intent(this, MainActivity.class));
-        }
 
-    }
 
 
 

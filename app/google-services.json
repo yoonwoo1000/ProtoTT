@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "868583956663",
+    "project_id": "protott",
+    "storage_bucket": "protott.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868583956663:android:375df4a10a5c93ec39ed32",
+        "android_client_info": {
+          "package_name": "com.example.protott"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868583956663-l7hh0tl3sdfg95um6p13imgrv3ekiupc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAewxbBoAySNUD06rK1t_4cCUc5av7kIXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868583956663-l7hh0tl3sdfg95um6p13imgrv3ekiupc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868583956663:android:620d88d427c3b8ce39ed32",
+        "android_client_info": {
+          "package_name": "com.jica.protott"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868583956663-l7hh0tl3sdfg95um6p13imgrv3ekiupc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAewxbBoAySNUD06rK1t_4cCUc5av7kIXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868583956663-l7hh0tl3sdfg95um6p13imgrv3ekiupc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

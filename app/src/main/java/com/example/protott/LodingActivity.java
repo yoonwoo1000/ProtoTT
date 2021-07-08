@@ -24,7 +24,7 @@ public class LodingActivity extends AppCompatActivity {
 
 
             }
-        },3000);
+        },1500);
 
 
     }

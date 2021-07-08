@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         btnFeedUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),FeedUpdate.class);
+                Intent intent = new Intent(getApplicationContext(), FeedUpdateActivity.class);
                 startActivity(intent);
             }
         });

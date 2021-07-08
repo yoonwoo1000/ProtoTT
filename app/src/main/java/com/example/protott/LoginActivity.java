@@ -25,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText etId,etPassword;
     Button btnLogin,btnSignup;
+    Button btnFacebookLogin;// 개발용 로그인
 
 
     @Override
@@ -38,6 +39,18 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnSignin);
         btnSignup = findViewById(R.id.btnSignup);
+
+        btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
+
+
+        btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
 
         btnSignup.setOnClickListener(new View.OnClickListener() {

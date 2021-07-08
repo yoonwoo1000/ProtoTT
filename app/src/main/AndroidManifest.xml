@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.protott">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +20,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".FeedUpdate" />
+        <activity android:name=".FeedUpdateActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity">
 

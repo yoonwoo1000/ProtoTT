@@ -49,8 +49,20 @@ public class SignupActivity extends AppCompatActivity {
 
         btnSignupOk.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-               createAccount();
+            public void onClick(View v)
+            {
+                String signupEmail = etSignupEmail.getText().toString().trim();
+                String signPassword = etSignupPassword.getText().toString().trim();
+                if(notEmpty())
+                {
+                    createAccount(signupEmail,signPassword);
+                }
+                else
+                    {
+                        Toast.makeText(SignupActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
+                    }
+
+
 
             }
         });
@@ -60,11 +72,11 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-       private void createAccount() {
+       private void createAccount(String email, String password) {
 
 
 
-       Auth.createUserWithEmailAndPassword(etSignupEmail.getText().toString(),etSignupPassword.getText().toString())
+       Auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -94,7 +106,31 @@ public class SignupActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    private boolean notEmpty()
+    {
+        Boolean checker;
+
+        String checkSignupId = etSignupEmail.getText().toString();
+        String checkSignupPassword = etSignupPassword.getText().toString();
+
+        if(checkSignupId.isEmpty() || checkSignupPassword.isEmpty())
+        {
+            return false;
+        }
+        else
+        {
+            checker = true;
+        }
+
+
+
+        return checker;
+
     }
+
+    }
+
 
 
 

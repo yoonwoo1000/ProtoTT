@@ -52,7 +52,28 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+
+                String id = etId.getText().toString().trim();
+                String password = etPassword.getText().toString().trim();
+
+                if (notEmpty())
+                {
+                    signIn(id,password);
+                }
+                else
+                    {
+                        Toast.makeText(LoginActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+
+
+
+
+
+
+
             }
         });
 
@@ -73,9 +94,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void signIn() {
+    private void signIn(String id, String password) {
         // Signin Email
-        mAuth.signInWithEmailAndPassword(etId.getText().toString(),etPassword.getText().toString())
+        mAuth.signInWithEmailAndPassword(id, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -87,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "濡쒓렇???ㅽ뙣.",
+                            Toast.makeText(LoginActivity.this, "Failed",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -110,6 +131,28 @@ public class LoginActivity extends AppCompatActivity {
     }*/
 
     private void reload() { }
+
+    private boolean notEmpty()
+    {
+        Boolean checker;
+
+        String checkId = etId.getText().toString();
+        String checkPassword = etPassword.getText().toString();
+
+        if(checkId.isEmpty() || checkPassword.isEmpty())
+        {
+            return false;
+        }
+        else
+        {
+            checker = true;
+        }
+
+
+
+        return checker;
+
+    }
 
     private void updateUI(FirebaseUser user) {
         //Login ?깃났??硫붿씤?붾㈃

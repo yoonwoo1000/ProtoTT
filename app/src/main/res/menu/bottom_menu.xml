@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/action_addPhoto"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_add_a_photo_24"
+        android:title="Add Photo"
+        />
+
+    <item
+        android:id="@+id/action_baccount"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_account_box_24"
+        android:title="Account Box"
+        />
+
+    <item
+        android:id="@+id/action_caccount"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_account_circle_24"
+        android:title="Account Circle"
+        />
+
+    <item
+        android:id="@+id/action_person"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_accessibility_24"
+        android:title="Person"
+        />
+
+
+
+</menu>

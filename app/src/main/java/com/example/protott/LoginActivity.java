@@ -11,21 +11,33 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG ="Login";
+    private static final int RC_SIGN_IN = 900;
+
+
 
     private FirebaseAuth mAuth;
     EditText etId,etPassword;
     Button btnLogin,btnSignup;
-    Button btnFacebookLogin;// 개발용 로그인
+    Button btnFacebookLogin, btnGoogleLogin;// 개발용 로그인
+
+
+
+
 
 
     @Override
@@ -39,8 +51,15 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnSignin);
         btnSignup = findViewById(R.id.btnSignup);
+        btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
 
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
+
+
+
+
+
+
 
 
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +67,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+
+            }
+        });
+
+        btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
@@ -86,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-   /* @Override
+   @Override
     public void onStart() {
         super.onStart();
         // User Check
@@ -96,7 +122,6 @@ public class LoginActivity extends AppCompatActivity {
             reload();
         }
     }
-*/
 
 
 

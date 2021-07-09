@@ -32,6 +32,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FeedUpdateActivity extends AppCompatActivity {
 
@@ -45,7 +47,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     private static final int REQUEST_TAKE_PHOTO = 1;
 
     ImageButton btnFeedUpdatePhoto;
-    private static Uri CaptureUri;
+    private static Uri captureUri;
     FirebaseStorage storage;
 
 
@@ -118,11 +120,29 @@ public class FeedUpdateActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        String url = "tmp_" +String.valueOf(System.currentTimeMillis())+".jpg";
-        CaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(),url));
 
-        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,CaptureUri);
-        startActivityForResult(intent,PICK_FROM_CAMERA);
+
+        if(intent.resolveActivity(getPackageManager()) !=null)
+        {
+            File photoFIle = null;
+            try {
+                photoFIle = createImageFile();
+            }catch (IOException ex)
+            {
+
+            }
+
+            if (photoFIle != null)
+            {
+                captureUri = FileProvider.getUriForFile(this,"com.example.protott",photoFIle);
+
+
+            }
+
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, captureUri);
+
+            startActivityForResult(intent,PICK_FROM_CAMERA);
+        }
 
 
     }
@@ -146,6 +166,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == PICK_FROM_CAMERA && resultCode == RESULT_OK)
+        {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            btnFeedUpdatePhoto.setImageBitmap(imageBitmap);
+        }
+
 
         if (resultCode != RESULT_OK)
 
@@ -155,33 +182,22 @@ public class FeedUpdateActivity extends AppCompatActivity {
         switch (requestCode) {
 
             case PICK_FROM_ALBUM: {
-                CaptureUri = data.getData();
-                Log.d("Camera", CaptureUri.getPath().toString());
+                captureUri = data.getData();
+                Log.d("Camera", captureUri.getPath().toString());
 
             }
 
 
-            case PICK_FROM_CAMERA: {
+         /*   case PICK_FROM_CAMERA: {
                 Intent intent = new Intent("com.android.camera.action.CROP");
                 intent.setDataAndType(CaptureUri, "image/*");
 
-                intent.putExtra("outputX", 200); // CROP한 이미지의 x축 크기
-
-                intent.putExtra("outputY", 200); // CROP한 이미지의 y축 크기
-
-                intent.putExtra("aspectX", 1); // CROP 박스의 X축 비율
-
-                intent.putExtra("aspectY", 1); // CROP 박스의 Y축 비율
-
-                intent.putExtra("scale", true);
-
-                intent.putExtra("return-data", true);
 
 
                 startActivityForResult(intent, CROP_FROM_IMAGE);
                 break;
 
-            }
+            }*/
             case CROP_FROM_IMAGE: {
 
                 if (resultCode != RESULT_OK) {
@@ -217,7 +233,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                 // 임시 파일 삭제
 
-                File file = new File(CaptureUri.getPath());
+                File file = new File(captureUri.getPath());
 
                 if (file.exists()) {
 
@@ -236,6 +252,24 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
 
 
+
+
+    }
+
+
+    private File createImageFile() throws IOException
+    {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName,".jpg",storageDir);
+
+        currentPicturePath = image.getAbsolutePath();
+
+
+
+
+        return image;
     }
 }
 

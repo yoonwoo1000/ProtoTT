@@ -11,6 +11,7 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,11 +28,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,7 +60,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     FirebaseStorage storage;
 
+    private FirebaseAuth auth;
+    FirebaseFirestore firestore;
+
     ImageView imageView;
+
 
 
     @Override
@@ -65,7 +73,12 @@ public class FeedUpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feed_update);
 
         storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
+        auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+
+
+
+
 
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
         btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
@@ -106,10 +119,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    public void uploadPicture()
-    {
-
-    }
 
     private void makeDialog() // 다이어 로그 만들기
     {
@@ -171,6 +180,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     }
 
 
+
     public File createImageFile() throws IOException {
 
 
@@ -183,14 +193,21 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 storageDir
         );
 
-        System.out.println(image + "dsagwermgoerjgoemngo");
-        System.out.println(currentPicturePath + " dldldldldl");
+
+
+
+
+
+        System.out.println(image + "image");
+        System.out.println(currentPicturePath + " currentPicPath");
+        System.out.println(photoUri + "photoURI");
 
 
         currentPicturePath = image.getAbsolutePath();
         return image;
 
     }
+
 
 
     public void takeAlbum() // 앨범에서 이미지 가져오기
@@ -225,6 +242,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,6 +268,10 @@ public class FeedUpdateActivity extends AppCompatActivity {
                             bitmap = ImageDecoder.decodeBitmap(source);
                             if (bitmap != null) {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
+
+                                System.out.println(currentPicturePath + " currentPicPath");
+                                System.out.println(photoUri + "photoURI");
+
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -258,6 +281,10 @@ public class FeedUpdateActivity extends AppCompatActivity {
                             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
                             if (bitmap != null) {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
+
+                                System.out.println(currentPicturePath + " currentPicPath");
+                                System.out.println(photoUri + "photoURI");
+
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -288,6 +315,10 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                             btnFeedUpdatePhoto.setImageURI(photoUri);
 
+                            System.out.println(currentPicturePath + " currentPicPath");
+                            System.out.println(photoUri + "photoURI");
+
+
                             //cropImage();
 
                         }catch (Exception e){
@@ -301,6 +332,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                     }
                     break;
                 }
+
         }
 
     }

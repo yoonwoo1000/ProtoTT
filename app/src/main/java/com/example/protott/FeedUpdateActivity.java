@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,10 +24,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -39,113 +42,150 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_ALBUM = 1;
-    private static final int CROP_FROM_IMAGE = 2;
+    private static final int REQUEST_FROM_CAMERA = 0;
     private static final String TAG = "permission";
 
     String currentPicturePath;
 
-    private static final int REQUEST_TAKE_PHOTO = 1;
-
     ImageButton btnFeedUpdatePhoto;
-    private static Uri captureUri;
+    ImageButton btnFeedUpdateCheck;
+    private static Uri captureUri;  // 사진찍기
+    private static Uri imageUri;
+    private static Uri photoUri; // 앨범
+    private static Uri albumUri;
+
     FirebaseStorage storage;
 
-
+    ImageView imageView;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_update);
 
         storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
+        btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
 
+        imageView = findViewById(R.id.imageView);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // 사진 권한 설정
+        {
+            if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "권한 설정 완료");
+            } else {
+                Log.d(TAG, "권한 설정 요청");
+                ActivityCompat.requestPermissions(FeedUpdateActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+
+        btnFeedUpdateCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
 
 
         btnFeedUpdatePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialog;
 
-                DialogInterface.OnClickListener takePictureListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        takePicture();
-                        Toast.makeText(FeedUpdateActivity.this, "Take Picture", Toast.LENGTH_SHORT).show();
-
-
-                    }
-                };
-                DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        takeAlbum();
-                        Toast.makeText(FeedUpdateActivity.this, "Album", Toast.LENGTH_SHORT).show();
-                    }
-                };
-                DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        Toast.makeText(FeedUpdateActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
-                    }
-                };
-                new AlertDialog.Builder(FeedUpdateActivity.this)
-                        .setTitle("Select")
-                        .setPositiveButton("Takepicture", takePictureListener)
-                        .setNeutralButton("cancel", cancelListener)
-                        .setNegativeButton("Album", albumListener)
-                        .show();
+                makeDialog();
 
             }
-
 
 
         });
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if(checkSelfPermission(Manifest.permission.CAMERA) ==
-                    PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-            { Log.d(TAG, "권한 설정 완료"); } else { Log.d(TAG, "권한 설정 요청");
-                ActivityCompat.requestPermissions(FeedUpdateActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1); }
-        }
 
     }
 
-    public void takePicture()
+    private void makeDialog() // 다이어 로그 만들기
+    {
+        AlertDialog.Builder dialog;
+
+        DialogInterface.OnClickListener takePictureListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                takePicture();
+                Toast.makeText(FeedUpdateActivity.this, "사진찍기", Toast.LENGTH_SHORT).show();
+
+
+            }
+        };
+        DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                takeAlbum();
+                Toast.makeText(FeedUpdateActivity.this, "앨범에서 선택하기", Toast.LENGTH_SHORT).show();
+            }
+        };
+        DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                Toast.makeText(FeedUpdateActivity.this, "취소", Toast.LENGTH_SHORT).show();
+            }
+        };
+        new AlertDialog.Builder(FeedUpdateActivity.this)
+                .setTitle("선택")
+                .setPositiveButton("사진찍기", takePictureListener)
+                .setNeutralButton("취소", cancelListener)
+                .setNegativeButton("앨범가기", albumListener)
+                .show();
+    }
+
+    public void takePicture() // 사진찍기
     {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
 
-
-        if(intent.resolveActivity(getPackageManager()) !=null)
-        {
-            File photoFIle = null;
             try {
-                photoFIle = createImageFile();
-            }catch (IOException ex)
-            {
-
+                photoFile = createImageFile();
+            } catch (IOException ex) {
             }
 
-            if (photoFIle != null)
-            {
-                captureUri = FileProvider.getUriForFile(this,"com.example.protott",photoFIle);
-
-
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this, "com.example.protott", photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(intent, REQUEST_FROM_CAMERA);
             }
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, captureUri);
 
-            startActivityForResult(intent,PICK_FROM_CAMERA);
         }
 
 
     }
+
+
+    public File createImageFile() throws IOException {
+
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+
+        System.out.println(currentPicturePath + " dldldldldl");
+
+
+        currentPicturePath = image.getAbsolutePath();
+        return image;
+
+    }
+
 
     public void takeAlbum() // 앨범에서 이미지 가져오기
 
@@ -154,9 +194,28 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_PICK);
 
-        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+
+        intent.setType("image/*");
 
         startActivityForResult(intent, PICK_FROM_ALBUM);
+
+    }
+
+
+    public void galleryAddPic() {
+
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+
+        File galleryFile = new File(currentPicturePath);
+
+        Uri contentUri = Uri.fromFile(galleryFile);
+
+        intent.setData(contentUri);
+
+        sendBroadcast(intent);
+
+        Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -166,112 +225,91 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == PICK_FROM_CAMERA && resultCode == RESULT_OK)
-        {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            btnFeedUpdatePhoto.setImageBitmap(imageBitmap);
-        }
-
-
-        if (resultCode != RESULT_OK)
+        if (resultCode != RESULT_OK) {
 
             return;
-
+        }
 
         switch (requestCode) {
 
-            case PICK_FROM_ALBUM: {
-                captureUri = data.getData();
-                Log.d("Camera", captureUri.getPath().toString());
+            case REQUEST_FROM_CAMERA: {
 
+                if (resultCode == RESULT_OK) {
+                    File file = new File(currentPicturePath);
+                    Bitmap bitmap;
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), Uri.fromFile(file));
+                        try {
+                            bitmap = ImageDecoder.decodeBitmap(source);
+                            if (bitmap != null) {
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
+                            if (bitmap != null) {
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+                break;
             }
 
+            case PICK_FROM_ALBUM:
+                {
+                    if(data.getData()!=null){
 
-         /*   case PICK_FROM_CAMERA: {
-                Intent intent = new Intent("com.android.camera.action.CROP");
-                intent.setDataAndType(CaptureUri, "image/*");
+                        try{
 
+                            File albumFile = null;
 
-
-                startActivityForResult(intent, CROP_FROM_IMAGE);
-                break;
-
-            }*/
-            case CROP_FROM_IMAGE: {
-
-                if (resultCode != RESULT_OK) {
-
-                    return;
-
-                }
+                            albumFile = createImageFile();
 
 
-                final Bundle extras = data.getExtras();
+                            photoUri = data.getData();
+
+                            albumUri = Uri.fromFile(albumFile);
 
 
-                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                            galleryAddPic();
 
-                        "/SmartWheel/" + System.currentTimeMillis() + ".jpg";
+                            imageView.setImageURI(photoUri);
 
+                            //cropImage();
 
-                if (extras != null) {
+                        }catch (Exception e){
 
-                    Bitmap photo = extras.getParcelable("data"); // CROP된 BITMAP
+                            e.printStackTrace();
 
-                    btnFeedUpdatePhoto.setImageBitmap(photo); // 레이아웃의 이미지칸에 CROP된 BITMAP을 보여줌
+                            Log.v("알림","앨범에서 가져오기 에러");
 
+                        }
 
-
-
-                    currentPicturePath = filePath;
+                    }
 
                     break;
 
 
-                }
 
-                // 임시 파일 삭제
 
-                File file = new File(captureUri.getPath());
 
-                if (file.exists()) {
-
-                    file.delete();
 
                 }
-
-            }
-
         }
 
 
 
-
-
-
-
-
-
-
     }
 
-
-    private File createImageFile() throws IOException
-    {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName,".jpg",storageDir);
-
-        currentPicturePath = image.getAbsolutePath();
-
-
-
-
-        return image;
-    }
 }
+
 
 
 

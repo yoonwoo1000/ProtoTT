@@ -14,7 +14,7 @@
 
     <external-path
         name="external"
-        path="."/>  <!--  Environment.getExternalStorageDirectory() 외부 저장소-->
+        path="Android/data/com.example.protott/files/Pictures"/>  <!--  Environment.getExternalStorageDirectory() 외부 저장소-->
     <external-cache-path
         name="external-cache"
         path="."/> <!--  Context.getExternalCacheDir() 외부 저장소-->

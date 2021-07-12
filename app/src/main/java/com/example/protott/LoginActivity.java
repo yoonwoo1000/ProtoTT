@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText etId,etPassword;
     Button btnLogin,btnSignup;
-    Button btnFacebookLogin, btnGoogleLogin;// 개발용 로그인
+    Button btnFacebookLogin;// 개발용 로그인
 
 
 
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnSignin);
         btnSignup = findViewById(R.id.btnSignup);
-        btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
+
 
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
 
@@ -71,12 +71,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
 
         btnSignup.setOnClickListener(new View.OnClickListener() {

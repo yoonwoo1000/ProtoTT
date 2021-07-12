@@ -66,6 +66,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
+
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
         btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
 
@@ -102,6 +103,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         });
 
+
+    }
+
+    public void uploadPicture()
+    {
 
     }
 
@@ -177,7 +183,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 storageDir
         );
 
-
+        System.out.println(image + "dsagwermgoerjgoemngo");
         System.out.println(currentPicturePath + " dldldldldl");
 
 
@@ -242,7 +248,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         try {
                             bitmap = ImageDecoder.decodeBitmap(source);
                             if (bitmap != null) {
-                                imageView.setImageBitmap(bitmap);
+                                btnFeedUpdatePhoto.setImageBitmap(bitmap);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -251,7 +257,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
                             if (bitmap != null) {
-                                imageView.setImageBitmap(bitmap);
+                                btnFeedUpdatePhoto.setImageBitmap(bitmap);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -280,7 +286,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                             galleryAddPic();
 
-                            imageView.setImageURI(photoUri);
+                            btnFeedUpdatePhoto.setImageURI(photoUri);
 
                             //cropImage();
 
@@ -293,18 +299,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         }
 
                     }
-
                     break;
-
-
-
-
-
-
                 }
         }
-
-
 
     }
 

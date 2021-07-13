@@ -1,17 +1,7 @@
 package com.example.protott;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,23 +14,30 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 public class FeedUpdateActivity extends AppCompatActivity {
 
@@ -53,6 +50,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     ImageButton btnFeedUpdatePhoto;
     ImageButton btnFeedUpdateCheck;
+    EditText etMemo;
+
     private static Uri captureUri;  // 사진찍기
     private static Uri imageUri;
     private static Uri photoUri; // 앨범
@@ -64,6 +63,10 @@ public class FeedUpdateActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
 
     ImageView imageView;
+
+
+
+
 
 
 
@@ -82,6 +85,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
         btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
+        etMemo = findViewById(R.id.etMemo);
 
         imageView = findViewById(R.id.imageView);
 
@@ -99,6 +103,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
         btnFeedUpdateCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                uploadFeed();
 
 
             }
@@ -179,6 +185,46 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+    public void uploadFeed()
+    {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_,png";
+        StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
+        storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+                ContentDTO contentDTO = new ContentDTO();
+
+                contentDTO.setImageUrl(uri.toString());
+
+                contentDTO.setUid(auth.getCurrentUser().getUid());
+
+                contentDTO.setExplain(etMemo.getText().toString());
+
+                contentDTO.setUserid(auth.getCurrentUser().getEmail());
+
+                contentDTO.setTimestamp(System.currentTimeMillis());
+
+                firestore.collection("images").document().set(contentDTO);
+
+                setResult(Activity.RESULT_OK);
+                finish();
+
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(FeedUpdateActivity.this,e.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
 
 
     public File createImageFile() throws IOException {
@@ -192,9 +238,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 ".jpg",
                 storageDir
         );
-
-
-
 
 
 
@@ -268,6 +311,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                             bitmap = ImageDecoder.decodeBitmap(source);
                             if (bitmap != null) {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
+                                galleryAddPic();
 
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");
@@ -281,6 +325,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
                             if (bitmap != null) {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
+                                galleryAddPic();
 
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");
@@ -301,17 +346,17 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                         try{
 
-                            File albumFile = null;
+                            //File albumFile = null;
 
-                            albumFile = createImageFile();
+                           // albumFile = createImageFile();
 
 
                             photoUri = data.getData();
 
-                            albumUri = Uri.fromFile(albumFile);
+                          //  albumUri = Uri.fromFile(albumFile);
 
 
-                            galleryAddPic();
+                          //  galleryAddPic();
 
                             btnFeedUpdatePhoto.setImageURI(photoUri);
 

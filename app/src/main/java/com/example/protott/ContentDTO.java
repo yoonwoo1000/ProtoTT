@@ -1,9 +1,9 @@
-package com.example.protott.navigation.model;
+package com.example.protott;
 
 import java.util.Map;
 import java.util.Objects;
 
- class ContnetDTO{
+ class ContentDTO{
 
     private String explain;
 
@@ -26,7 +26,7 @@ import java.util.Objects;
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ContnetDTO that = (ContnetDTO) o;
+        ContentDTO that = (ContentDTO) o;
         return favoriteCount == that.favoriteCount &&
                 explain.equals(that.explain) &&
                 imageUrl.equals(that.imageUrl) &&

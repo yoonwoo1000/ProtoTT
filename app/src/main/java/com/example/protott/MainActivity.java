@@ -11,10 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.example.protott.navigation.Frag1;
-import com.example.protott.navigation.Frag2;
-import com.example.protott.navigation.Frag3;
-import com.example.protott.navigation.Frag4;
+import com.example.protott.navigation.*;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {

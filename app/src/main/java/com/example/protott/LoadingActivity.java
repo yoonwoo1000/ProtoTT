@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LodingActivity extends AppCompatActivity {
+public class LoadingActivity extends AppCompatActivity {
 
     Handler handler = new Handler();
 

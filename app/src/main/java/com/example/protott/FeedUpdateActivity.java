@@ -28,6 +28,7 @@ import androidx.core.content.FileProvider;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -104,6 +105,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 uploadFeed();
 
 
@@ -124,6 +126,29 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
 
     }
+
+    private boolean notEmpty()
+    {
+        Boolean checker;
+
+        Uri checkUri = photoUri;
+
+        if(checkUri == null)
+        {
+            return false;
+        }
+        else
+        {
+            checker = true;
+        }
+
+
+
+        return checker;
+
+    }
+
+
 
 
     private void makeDialog() // 다이어 로그 만들기
@@ -192,7 +217,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
         StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
         storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
                 String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 

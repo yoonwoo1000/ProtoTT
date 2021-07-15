@@ -1,9 +1,9 @@
-package com.example.protott;
+package com.example.protott.model;
 
 import java.util.Map;
 import java.util.Objects;
 
- class ContentDTO{
+ public class ContentDTO{
 
     private String explain;
 

@@ -14,7 +14,14 @@ import com.example.protott.R;
 
 public class Frag3 extends Fragment
 {
+
+
+
+
     private View view;
+
+
+
 
 
     @Nullable
@@ -24,6 +31,13 @@ public class Frag3 extends Fragment
 
         view = inflater.inflate(R.layout.frag3, container, false);
 
+
+
+
+
         return view;
     }
+
+
+
 }

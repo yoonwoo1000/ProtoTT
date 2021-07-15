@@ -25,10 +25,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.example.protott.model.ContentDTO;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 
 public class FeedUpdateActivity extends AppCompatActivity {
@@ -53,7 +54,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     ImageButton btnFeedUpdateCheck;
     EditText etMemo;
 
-    private static Uri captureUri;  // 사진찍기
+    private static Uri contentUri;  // 사진찍기
     private static Uri imageUri;
     private static Uri photoUri; // 앨범
     private static Uri albumUri;
@@ -66,6 +67,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
     ImageView imageView;
 
 
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +80,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
+
+
 
 
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
@@ -119,21 +128,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    private boolean notEmpty() {
-        Boolean checker;
-
-        Uri checkUri = photoUri;
-
-        if (checkUri == null) {
-            return false;
-        } else {
-            checker = true;
-        }
 
 
-        return checker;
-
-    }
 
 
     private void makeDialog() // 다이어 로그 만들기
@@ -184,8 +180,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
             }
 
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, "com.example.protott", photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                Uri photoUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(intent, REQUEST_FROM_CAMERA);
             }
 
@@ -195,44 +191,103 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    public void uploadFeed() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_,png";
-        StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
-        storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+    public void uploadFeed()
+    {
+        if (photoUri != null) {
 
-                String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                ContentDTO contentDTO = new ContentDTO();
 
-                contentDTO.setImageUrl(uri.toString());
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-                contentDTO.setUid(auth.getCurrentUser().getUid());
+            String imageFileName = "JPEG_" + timeStamp + "_,png";
 
-                contentDTO.setExplain(etMemo.getText().toString());
+            StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
+            storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-                contentDTO.setUserid(auth.getCurrentUser().getEmail());
 
-                contentDTO.setTimestamp(System.currentTimeMillis());
+                @Override
+                public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
-                firestore.collection("images").document().set(contentDTO);
+                    String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                setResult(Activity.RESULT_OK);
-                finish();
+                    ContentDTO contentDTO = new ContentDTO();
 
+                    contentDTO.setImageUrl(uri.toString());
+
+                    contentDTO.setUid(auth.getCurrentUser().getUid());
+
+                    contentDTO.setExplain(etMemo.getText().toString());
+
+                    contentDTO.setUserid(auth.getCurrentUser().getEmail());
+
+                    contentDTO.setTimestamp(System.currentTimeMillis());
+
+                    firestore.collection("images").document().set(contentDTO);
+
+                    setResult(Activity.RESULT_OK);
+                    finish();
+
+
+                }
+
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(FeedUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
+        else if(contentUri != null)
+        {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+            String imageFileName = "JPEG_" + timeStamp + "_,png";
+
+            StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
+            storageReference.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+
+                @Override
+                public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+
+                    String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+                    ContentDTO contentDTO = new ContentDTO();
+
+                    contentDTO.setImageUrl(uri.toString());
+
+                    contentDTO.setUid(auth.getCurrentUser().getUid());
+
+                    contentDTO.setExplain(etMemo.getText().toString());
+
+                    contentDTO.setUserid(auth.getCurrentUser().getEmail());
+
+                    contentDTO.setTimestamp(System.currentTimeMillis());
+
+                    firestore.collection("images").document().set(contentDTO);
+
+                    setResult(Activity.RESULT_OK);
+                    finish();
+
+
+                }
+
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(FeedUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
+        else
+            {
+                Toast.makeText(this, "사진 필요", Toast.LENGTH_SHORT).show();
             }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(FeedUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
 
     }
+
 
 
     public File createImageFile() throws IOException {
@@ -248,6 +303,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
         );
 
 
+
         System.out.println(image + "image");
         System.out.println(currentPicturePath + " currentPicPath");
         System.out.println(photoUri + "photoURI");
@@ -257,6 +313,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
         return image;
 
     }
+
 
 
     public void takeAlbum() // 앨범에서 이미지 가져오기
@@ -281,7 +338,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         File galleryFile = new File(currentPicturePath);
 
-        Uri contentUri = Uri.fromFile(galleryFile);
+        contentUri = Uri.fromFile(galleryFile);
 
         intent.setData(contentUri);
 
@@ -290,6 +347,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
         Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
     }
+
 
 
     @Override
@@ -315,11 +373,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         try {
                             bitmap = ImageDecoder.decodeBitmap(source);
                             if (bitmap != null) {
+
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
 
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");
+
 
                             }
                         } catch (IOException e) {
@@ -341,46 +401,48 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         }
 
                     }
+
                 }
                 break;
             }
 
-            case PICK_FROM_ALBUM: {
-                if (data.getData() != null) {
+            case PICK_FROM_ALBUM:
+                {
+                    if(data.getData()!=null){
 
-                    try {
+                        try{
 
-                        //File albumFile = null;
+                            //File albumFile = null;
 
-                        // albumFile = createImageFile();
-
-
-                        photoUri = data.getData();
-
-                        //  albumUri = Uri.fromFile(albumFile);
+                           // albumFile = createImageFile();
 
 
-                        //  galleryAddPic();
+                            photoUri = data.getData();
 
-                        btnFeedUpdatePhoto.setImageURI(photoUri);
-
-                        System.out.println(currentPicturePath + " currentPicPath");
-                        System.out.println(photoUri + "photoURI");
+                          //  albumUri = Uri.fromFile(albumFile);
 
 
-                        //cropImage();
+                          //  galleryAddPic();
 
-                    } catch (Exception e) {
+                            btnFeedUpdatePhoto.setImageURI(photoUri);
 
-                        e.printStackTrace();
+                            System.out.println(currentPicturePath + " currentPicPath");
+                            System.out.println(photoUri + "photoURI");
 
-                        Log.v("알림", "앨범에서 가져오기 에러");
+
+                            //cropImage();
+
+                        }catch (Exception e){
+
+                            e.printStackTrace();
+
+                            Log.v("알림","앨범에서 가져오기 에러");
+
+                        }
 
                     }
-
+                    break;
                 }
-                break;
-            }
 
         }
 

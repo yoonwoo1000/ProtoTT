@@ -11,8 +11,6 @@ import java.util.Objects;
 
     private String uid;
 
-
-
      private String userid;
 
     private Long timestamp;

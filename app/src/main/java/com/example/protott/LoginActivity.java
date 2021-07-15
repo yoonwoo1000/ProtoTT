@@ -20,19 +20,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG ="Login";
+    private static final String TAG = "Login";
     private static final int RC_SIGN_IN = 900;
 
 
-
     private FirebaseAuth mAuth;
-    EditText etId,etPassword;
-    Button btnLogin,btnSignup;
+    EditText etId, etPassword;
+    Button btnLogin, btnSignup;
     Button btnFacebookLogin;// 개발용 로그인
-
-
-
-
 
 
     @Override
@@ -51,12 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
 
 
-
-
-
-
-
-
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-
 
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
@@ -84,15 +72,12 @@ public class LoginActivity extends AppCompatActivity {
                 String id = etId.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
 
-                if (notEmpty())
-                {
-                    signIn(id,password);
+                if (notEmpty()) {
+                    signIn(id, password);
 
+                } else {
+                    Toast.makeText(LoginActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
                 }
-                else
-                    {
-                        Toast.makeText(LoginActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
-                    }
 
 
             }
@@ -101,17 +86,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-   @Override
+    @Override
     public void onStart() {
         super.onStart();
         // User Check
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Toast.makeText(LoginActivity.this, "onStart",Toast.LENGTH_SHORT).show();
+        if (currentUser != null) {
+            Toast.makeText(LoginActivity.this, "onStart", Toast.LENGTH_SHORT).show();
             reload();
         }
     }
-
 
 
     private void signIn(String id, String password) {
@@ -139,8 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
 
-        if(user != null)
-        {
+        if (user != null) {
             startActivity(new Intent(this, MainActivity.class));
         }
 
@@ -159,33 +142,25 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }*/
 
-    private void reload() { }
+    private void reload() {
+    }
 
-    private boolean notEmpty()
-    {
+    private boolean notEmpty() {
         Boolean checker;
 
         String checkId = etId.getText().toString();
         String checkPassword = etPassword.getText().toString();
 
-        if(checkId.isEmpty() || checkPassword.isEmpty())
-        {
+        if (checkId.isEmpty() || checkPassword.isEmpty()) {
             return false;
-        }
-        else
-        {
+        } else {
             checker = true;
         }
-
 
 
         return checker;
 
     }
-
-
-
-
 
 
 }

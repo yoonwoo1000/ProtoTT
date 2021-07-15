@@ -66,11 +66,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
     ImageView imageView;
 
 
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +74,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
-
-
-
 
 
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
@@ -127,28 +119,21 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    private boolean notEmpty()
-    {
+    private boolean notEmpty() {
         Boolean checker;
 
         Uri checkUri = photoUri;
 
-        if(checkUri == null)
-        {
+        if (checkUri == null) {
             return false;
-        }
-        else
-        {
+        } else {
             checker = true;
         }
-
 
 
         return checker;
 
     }
-
-
 
 
     private void makeDialog() // 다이어 로그 만들기
@@ -210,8 +195,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    public void uploadFeed()
-    {
+    public void uploadFeed() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_,png";
         StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
@@ -243,13 +227,12 @@ public class FeedUpdateActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(FeedUpdateActivity.this,e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(FeedUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
         });
 
     }
-
 
 
     public File createImageFile() throws IOException {
@@ -265,7 +248,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         );
 
 
-
         System.out.println(image + "image");
         System.out.println(currentPicturePath + " currentPicPath");
         System.out.println(photoUri + "photoURI");
@@ -275,7 +257,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         return image;
 
     }
-
 
 
     public void takeAlbum() // 앨범에서 이미지 가져오기
@@ -309,7 +290,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
     }
-
 
 
     @Override
@@ -365,43 +345,42 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 break;
             }
 
-            case PICK_FROM_ALBUM:
-                {
-                    if(data.getData()!=null){
+            case PICK_FROM_ALBUM: {
+                if (data.getData() != null) {
 
-                        try{
+                    try {
 
-                            //File albumFile = null;
+                        //File albumFile = null;
 
-                           // albumFile = createImageFile();
-
-
-                            photoUri = data.getData();
-
-                          //  albumUri = Uri.fromFile(albumFile);
+                        // albumFile = createImageFile();
 
 
-                          //  galleryAddPic();
+                        photoUri = data.getData();
 
-                            btnFeedUpdatePhoto.setImageURI(photoUri);
-
-                            System.out.println(currentPicturePath + " currentPicPath");
-                            System.out.println(photoUri + "photoURI");
+                        //  albumUri = Uri.fromFile(albumFile);
 
 
-                            //cropImage();
+                        //  galleryAddPic();
 
-                        }catch (Exception e){
+                        btnFeedUpdatePhoto.setImageURI(photoUri);
 
-                            e.printStackTrace();
+                        System.out.println(currentPicturePath + " currentPicPath");
+                        System.out.println(photoUri + "photoURI");
 
-                            Log.v("알림","앨범에서 가져오기 에러");
 
-                        }
+                        //cropImage();
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        Log.v("알림", "앨범에서 가져오기 에러");
 
                     }
-                    break;
+
                 }
+                break;
+            }
 
         }
 

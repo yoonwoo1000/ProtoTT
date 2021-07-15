@@ -45,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId())
-                {
+                switch (menuItem.getItemId()) {
                     case R.id.action_person:
                         setFrag(0);
                         break;
@@ -74,13 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setFrag(int n)
-    {
+    private void setFrag(int n) {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
 
-        switch (n)
-        {
+        switch (n) {
             case 0:
                 ft.replace(R.id.main_frame, frag1);
                 ft.commit();

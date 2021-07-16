@@ -11,20 +11,18 @@ public class LoadingActivity extends AppCompatActivity {
     Handler handler = new Handler();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loding);
         handler.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+            public void run() {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
 
 
             }
-        },1000);
+        }, 1000);
 
 
     }

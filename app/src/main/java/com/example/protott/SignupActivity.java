@@ -18,12 +18,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignupActivity extends AppCompatActivity {
 
-   private FirebaseAuth Auth;
+    private FirebaseAuth Auth;
 
-    EditText etSignupEmail,etSignupPassword;
+    EditText etSignupEmail, etSignupPassword;
     Button btnSignupOk, btnSignupCancel;
-
-
 
 
     @Override
@@ -41,41 +39,34 @@ public class SignupActivity extends AppCompatActivity {
         btnSignupCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
         });
 
         btnSignupOk.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 String signupEmail = etSignupEmail.getText().toString().trim();
                 String signPassword = etSignupPassword.getText().toString().trim();
-                if(notEmpty())
-                {
-                    createAccount(signupEmail,signPassword);
+                if (notEmpty()) {
+                    createAccount(signupEmail, signPassword);
+                } else {
+                    Toast.makeText(SignupActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
                 }
-                else
-                    {
-                        Toast.makeText(SignupActivity.this, "All fields are Required", Toast.LENGTH_SHORT).show();
-                    }
-
 
 
             }
         });
 
 
-
     }
 
 
-       private void createAccount(String email, String password) {
+    private void createAccount(String email, String password) {
 
 
-
-       Auth.createUserWithEmailAndPassword(email,password)
+        Auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -83,7 +74,7 @@ public class SignupActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
 
-                            Toast.makeText(SignupActivity.this, "Success",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, "Success", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = Auth.getCurrentUser();
 
                             SignupSuccess();
@@ -99,36 +90,30 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    private void SignupSuccess()
-    {
+    private void SignupSuccess() {
         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 
 
-    private boolean notEmpty()
-    {
+    private boolean notEmpty() {
         Boolean checker;
 
         String checkSignupId = etSignupEmail.getText().toString();
         String checkSignupPassword = etSignupPassword.getText().toString();
 
-        if(checkSignupId.isEmpty() || checkSignupPassword.isEmpty())
-        {
+        if (checkSignupId.isEmpty() || checkSignupPassword.isEmpty()) {
             return false;
-        }
-        else
-        {
+        } else {
             checker = true;
         }
-
 
 
         return checker;
 
     }
 
-    }
+}
 
 
 

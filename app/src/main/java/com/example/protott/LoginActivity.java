@@ -124,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
 
         if (user != null) {
+            Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         }
 

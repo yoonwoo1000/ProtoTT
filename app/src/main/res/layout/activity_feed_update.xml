@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,41 +8,39 @@
     <include
         android:id="@+id/feedupdateToolbar"
         layout="@layout/feed_update_toolbar" />
-    
+
     <LinearLayout
         android:id="@+id/feedupdateToolbarLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:orientation="horizontal"
-        android:background="@color/black"
         android:layout_below="@+id/feedupdateToolbar"
-        ></LinearLayout>
-    
-   <ImageButton
-       android:id="@+id/btnFeedUpdatePhoto"
-       android:layout_width="100dp"
-       android:layout_height="100dp"
-       android:layout_margin="5dp"
-       android:src="@drawable/ic_baseline_add_a_photo_24"
-       android:layout_below="@+id/feedupdateToolbarLine"
-       />
+        android:background="@color/black"
+        android:orientation="horizontal"></LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnFeedUpdatePhoto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/feedupdateToolbarLine"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_baseline_add_a_photo_24" />
 
     <EditText
         android:id="@+id/etMemo"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginLeft="17dp"
-        android:layout_toRightOf="@id/btnFeedUpdatePhoto"
         android:layout_below="@id/feedupdateToolbarLine"
         android:layout_margin="5dp"
+        android:layout_marginLeft="17dp"
+        android:layout_toRightOf="@id/btnFeedUpdatePhoto"
         android:hint="Memo" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:srcCompat="@tools:sample/avatars"
-        android:layout_below="@id/etMemo"/>
+        android:layout_below="@id/etMemo"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </RelativeLayout>

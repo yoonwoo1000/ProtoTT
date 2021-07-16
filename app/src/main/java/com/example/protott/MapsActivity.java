@@ -17,7 +17,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap Map;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,11 +27,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);  // 지도를 표시할 준비를 내부적으로 수행(네트워크로 지도를 요청해서 다운받아 Fragment에 표시한다.)
     }
-
-
-
-
-
 
 
     @Override

@@ -9,8 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
-public class FeedActivity extends FragmentActivity
-{
+public class FeedActivity extends FragmentActivity {
     Button btnplay;
 
     @Override

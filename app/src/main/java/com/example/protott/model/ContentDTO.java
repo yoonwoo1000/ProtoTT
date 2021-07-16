@@ -3,7 +3,7 @@ package com.example.protott.model;
 import java.util.Map;
 import java.util.Objects;
 
- public class ContentDTO{
+public class ContentDTO {
 
     private String explain;
 
@@ -11,14 +11,31 @@ import java.util.Objects;
 
     private String uid;
 
-     private String userid;
+    private String userid;
 
     private Long timestamp;
 
-    private int favoriteCount;
+    private String latitude;
 
-    private Map favorites;
+    private String longitude;
 
+    private String takenDate;
+
+    @Override
+    public String toString() {
+        return "ContentDTO{" +
+                "explain='" + explain + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", uid='" + uid + '\'' +
+                ", userid='" + userid + '\'' +
+                ", timestamp=" + timestamp +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", takenDate='" + takenDate + '\'' +
+                ", favoriteCount=" + favoriteCount +
+                ", favorites=" + favorites +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -26,18 +43,50 @@ import java.util.Objects;
         if (o == null || getClass() != o.getClass()) return false;
         ContentDTO that = (ContentDTO) o;
         return favoriteCount == that.favoriteCount &&
-                explain.equals(that.explain) &&
-                imageUrl.equals(that.imageUrl) &&
-                uid.equals(that.uid) &&
-                userid.equals(that.userid) &&
-                timestamp.equals(that.timestamp) &&
+                Objects.equals(explain, that.explain) &&
+                Objects.equals(imageUrl, that.imageUrl) &&
+                Objects.equals(uid, that.uid) &&
+                Objects.equals(userid, that.userid) &&
+                Objects.equals(timestamp, that.timestamp) &&
+                Objects.equals(latitude, that.latitude) &&
+                Objects.equals(longitude, that.longitude) &&
+                Objects.equals(takenDate, that.takenDate) &&
                 Objects.equals(favorites, that.favorites);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(explain, imageUrl, uid, userid, timestamp, favoriteCount, favorites);
+        return Objects.hash(explain, imageUrl, uid, userid, timestamp, latitude, longitude, takenDate, favoriteCount, favorites);
     }
+
+    public String getTakenDate() {
+        return takenDate;
+    }
+
+    public void setTakenDate(String takenDate) {
+        this.takenDate = takenDate;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    private int favoriteCount;
+
+    private Map favorites;
+
 
     public String getExplain() {
         return explain;

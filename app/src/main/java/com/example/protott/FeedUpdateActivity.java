@@ -2,9 +2,11 @@ package com.example.protott;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
@@ -205,6 +207,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
             storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
 
+
                 @Override
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -321,6 +324,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
     {
 
 
+
+
         Intent intent = new Intent(Intent.ACTION_PICK);
 
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
@@ -347,6 +352,60 @@ public class FeedUpdateActivity extends AppCompatActivity {
         Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
     }
+    public void getImageinfo()
+    {
+        Cursor mManagedCursor;
+        ContentResolver contentResolver = getContentResolver();
+        mManagedCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,null,null,null,null);
+
+        if(mManagedCursor != null)
+        {
+            mManagedCursor.moveToFirst();
+            int nSize = mManagedCursor.getColumnCount();
+
+            while (true)
+            {
+                String result ="";
+
+                String date_taken =
+                        mManagedCursor.getString(
+                                mManagedCursor.getColumnIndex(
+                                        MediaStore.Images.ImageColumns.DATE_TAKEN)); // 촬영날짜. 1/1000초 단위
+                result += date_taken +"|";
+                String latitude =
+                        mManagedCursor.getString(
+                                mManagedCursor.getColumnIndex(
+                                        MediaStore.Images.ImageColumns.LATITUDE)); // 위도
+                result += latitude +"|";
+
+                String longitude =
+                        mManagedCursor.getString(
+                                mManagedCursor.getColumnIndex(
+                                        MediaStore.Images.ImageColumns.LONGITUDE)); // 경도
+                result += longitude +"|";
+
+             /*   if(latitude != null && !latitude.equals("0") && !longitude.equals("0")) {
+                    mTitleArray.add(title + " " + latitude + "," + longitude);
+
+                    paths.add(data);
+                    Log.d("TAG", result);
+                }
+                if (mManagedCursor.isLast())
+                {
+                    break;
+                }
+                else
+                {
+                    mManagedCursor.moveToNext();
+                }*/
+
+            }
+
+        }
+
+    }
+
+
 
 
 
@@ -408,9 +467,12 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
             case PICK_FROM_ALBUM:
                 {
+
+
                     if(data.getData()!=null){
 
                         try{
+
 
                             //File albumFile = null;
 
@@ -425,6 +487,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                           //  galleryAddPic();
 
                             btnFeedUpdatePhoto.setImageURI(photoUri);
+
 
                             System.out.println(currentPicturePath + " currentPicPath");
                             System.out.println(photoUri + "photoURI");
@@ -443,6 +506,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                     }
                     break;
                 }
+
 
         }
 

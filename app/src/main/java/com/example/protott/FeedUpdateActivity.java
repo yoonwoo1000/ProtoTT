@@ -3,11 +3,13 @@ package com.example.protott;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -37,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,8 +68,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     FirebaseFirestore firestore;
 
-    ImageView imageView;
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        photoUri = null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
         btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
         etMemo = findViewById(R.id.etMemo);
 
-        imageView = findViewById(R.id.imageView);
+
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // 사진 권한 설정
         {
@@ -379,6 +387,39 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+    private Bitmap resize(Context context, Uri uri, int resize){
+        Bitmap resizeBitmap=null;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        try {
+            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); // 1번
+
+            int width = options.outWidth;
+            int height = options.outHeight;
+            int samplesize = 1;
+
+            while (true) {//2번
+                if (width / 2 < resize || height / 2 < resize)
+                    break;
+                width /= 2;
+                height /= 2;
+                samplesize *= 2;
+            }
+
+            options.inSampleSize = samplesize;
+            Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); //3번
+            resizeBitmap=bitmap;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return resizeBitmap;
+    }
+
+
+
+
+
 
     @Override
 
@@ -406,6 +447,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
+
 
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");

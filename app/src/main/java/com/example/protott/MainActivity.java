@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private Frag4 frag4;
     ImageButton btnFeedUpdate;
 
+    FeedUpdateActivity feedUpdateActivity = new FeedUpdateActivity();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

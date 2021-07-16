@@ -42,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-
 public class FeedUpdateActivity extends AppCompatActivity {
 
     private static final int PICK_FROM_CAMERA = 0;
@@ -69,11 +68,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
     ImageView imageView;
 
 
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +76,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
-
-
-
 
 
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
@@ -129,9 +120,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
 
     }
-
-
-
 
 
     private void makeDialog() // 다이어 로그 만들기
@@ -193,10 +181,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    public void uploadFeed()
-    {
+    public void uploadFeed() {
         if (photoUri != null) {
-
 
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -205,7 +191,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
             StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
             storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
 
 
                 @Override
@@ -240,9 +225,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else if(contentUri != null)
-        {
+        } else if (contentUri != null) {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
             String imageFileName = "JPEG_" + timeStamp + "_,png";
@@ -283,14 +266,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                 }
             });
+        } else {
+            Toast.makeText(this, "사진 필요", Toast.LENGTH_SHORT).show();
         }
-        else
-            {
-                Toast.makeText(this, "사진 필요", Toast.LENGTH_SHORT).show();
-            }
 
     }
-
 
 
     public File createImageFile() throws IOException {
@@ -306,7 +286,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         );
 
 
-
         System.out.println(image + "image");
         System.out.println(currentPicturePath + " currentPicPath");
         System.out.println(photoUri + "photoURI");
@@ -318,12 +297,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
     }
 
 
-
     public void takeAlbum() // 앨범에서 이미지 가져오기
 
     {
-
-
 
 
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -352,37 +328,35 @@ public class FeedUpdateActivity extends AppCompatActivity {
         Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
     }
-    public void getImageinfo()
-    {
+
+    public void getImageinfo() {
         Cursor mManagedCursor;
         ContentResolver contentResolver = getContentResolver();
-        mManagedCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,null,null,null,null);
+        mManagedCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
 
-        if(mManagedCursor != null)
-        {
+        if (mManagedCursor != null) {
             mManagedCursor.moveToFirst();
             int nSize = mManagedCursor.getColumnCount();
 
-            while (true)
-            {
-                String result ="";
+            while (true) {
+                String result = "";
 
                 String date_taken =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.DATE_TAKEN)); // 촬영날짜. 1/1000초 단위
-                result += date_taken +"|";
+                result += date_taken + "|";
                 String latitude =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.LATITUDE)); // 위도
-                result += latitude +"|";
+                result += latitude + "|";
 
                 String longitude =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.LONGITUDE)); // 경도
-                result += longitude +"|";
+                result += longitude + "|";
 
              /*   if(latitude != null && !latitude.equals("0") && !longitude.equals("0")) {
                     mTitleArray.add(title + " " + latitude + "," + longitude);
@@ -404,9 +378,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         }
 
     }
-
-
-
 
 
     @Override
@@ -465,47 +436,46 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 break;
             }
 
-            case PICK_FROM_ALBUM:
-                {
+            case PICK_FROM_ALBUM: {
 
 
-                    if(data.getData()!=null){
+                if (data.getData() != null) {
 
-                        try{
-
-
-                            //File albumFile = null;
-
-                           // albumFile = createImageFile();
+                    try {
 
 
-                            photoUri = data.getData();
+                        //File albumFile = null;
 
-                          //  albumUri = Uri.fromFile(albumFile);
-
-
-                          //  galleryAddPic();
-
-                            btnFeedUpdatePhoto.setImageURI(photoUri);
+                        // albumFile = createImageFile();
 
 
-                            System.out.println(currentPicturePath + " currentPicPath");
-                            System.out.println(photoUri + "photoURI");
+                        photoUri = data.getData();
+
+                        //  albumUri = Uri.fromFile(albumFile);
 
 
-                            //cropImage();
+                        //  galleryAddPic();
 
-                        }catch (Exception e){
+                        btnFeedUpdatePhoto.setImageURI(photoUri);
 
-                            e.printStackTrace();
 
-                            Log.v("알림","앨범에서 가져오기 에러");
+                        System.out.println(currentPicturePath + " currentPicPath");
+                        System.out.println(photoUri + "photoURI");
 
-                        }
+
+                        //cropImage();
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        Log.v("알림", "앨범에서 가져오기 에러");
 
                     }
-                    break;
+
                 }
+                break;
+            }
 
 
         }

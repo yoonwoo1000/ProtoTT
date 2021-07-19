@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +42,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import io.grpc.Metadata;
 
 
 public class FeedUpdateActivity extends AppCompatActivity {
@@ -87,9 +88,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
         btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
         etMemo = findViewById(R.id.etMemo);
-
-
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // 사진 권한 설정
@@ -197,16 +195,31 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
             String imageFileName = "JPEG_" + timeStamp + "_,png";
 
+
             StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
+
             storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
 
                 @Override
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
+                    //private String latitude;
+
+                    //private String longitude;
+
+                    // private String takenDate;
+
                     String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
+
                     ContentDTO contentDTO = new ContentDTO();
+
+                    //contentDTO.setLatitude();
+
+                    //contentDTO.setLongitude();
+
+                    //contentDTO.setTakenDate();
 
                     contentDTO.setImageUrl(uri.toString());
 
@@ -215,6 +228,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                     contentDTO.setExplain(etMemo.getText().toString());
 
                     contentDTO.setUserid(auth.getCurrentUser().getEmail());
+
 
                     contentDTO.setTimestamp(System.currentTimeMillis());
 
@@ -387,34 +401,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    private Bitmap resize(Context context, Uri uri, int resize){
-        Bitmap resizeBitmap=null;
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        try {
-            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); // 1번
-
-            int width = options.outWidth;
-            int height = options.outHeight;
-            int samplesize = 1;
-
-            while (true) {//2번
-                if (width / 2 < resize || height / 2 < resize)
-                    break;
-                width /= 2;
-                height /= 2;
-                samplesize *= 2;
-            }
-
-            options.inSampleSize = samplesize;
-            Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); //3번
-            resizeBitmap=bitmap;
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return resizeBitmap;
-    }
 
 
 
@@ -426,7 +412,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode != RESULT_OK) {
 
             return;
@@ -439,6 +424,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     File file = new File(currentPicturePath);
                     Bitmap bitmap;
+
                     if (Build.VERSION.SDK_INT >= 29) {
                         ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), Uri.fromFile(file));
                         try {
@@ -447,6 +433,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
+
 
 
                                 System.out.println(currentPicturePath + " currentPicPath");

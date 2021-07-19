@@ -97,6 +97,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="35dp"
-        tools:text="사진 내용" />
+        android:hint="Memo" />
 
 </LinearLayout>

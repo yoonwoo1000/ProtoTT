@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,6 +61,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
     ImageButton btnFeedUpdateCheck;
     EditText etMemo;
 
+    TextView tvPlace, tvPictureDate;
+
+    String latitude;
+    String longitude;
+    String takeDate;
+
+
     private static Uri contentUri;  // 사진찍기
     private static Uri imageUri;
     private static Uri photoUri; // 앨범
@@ -88,6 +97,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
         btnFeedUpdatePhoto = findViewById(R.id.btnFeedUpdatePhoto);
         btnFeedUpdateCheck = findViewById(R.id.btnFeedUpdateCheck);
         etMemo = findViewById(R.id.etMemo);
+
+        tvPictureDate = findViewById(R.id.tvPictureDate);
+        tvPlace = findViewById(R.id.tvPlace);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // 사진 권한 설정
@@ -204,22 +216,14 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
-                    //private String latitude;
 
-                    //private String longitude;
-
-                    // private String takenDate;
 
                     String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
 
                     ContentDTO contentDTO = new ContentDTO();
 
-                    //contentDTO.setLatitude();
 
-                    //contentDTO.setLongitude();
-
-                    //contentDTO.setTakenDate();
 
                     contentDTO.setImageUrl(uri.toString());
 
@@ -231,6 +235,12 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
 
                     contentDTO.setTimestamp(System.currentTimeMillis());
+
+                    contentDTO.setLatitude(latitude);
+
+                    contentDTO.setLongitude(longitude);
+
+                    contentDTO.setTakenDate(takeDate);
 
                     firestore.collection("images").document().set(contentDTO);
 
@@ -272,6 +282,12 @@ public class FeedUpdateActivity extends AppCompatActivity {
                     contentDTO.setUserid(auth.getCurrentUser().getEmail());
 
                     contentDTO.setTimestamp(System.currentTimeMillis());
+
+                    contentDTO.setLatitude(latitude);
+
+                    contentDTO.setLongitude(longitude);
+
+                    contentDTO.setTakenDate(takeDate);
 
                     firestore.collection("images").document().set(contentDTO);
 
@@ -401,10 +417,23 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+    private void showExif(ExifInterface exif) {
 
 
+        takeDate = getTagString(ExifInterface.TAG_DATETIME, exif);
 
+        tvPictureDate.setText(takeDate);
 
+        longitude = getTagString(ExifInterface.TAG_GPS_LONGITUDE, exif);
+
+        latitude = getTagString(ExifInterface.TAG_GPS_LATITUDE, exif);
+
+        tvPlace.setText(latitude);
+    }
+
+    private String getTagString(String TAG, ExifInterface exif) {
+        return (exif.getAttribute(TAG));
+    }
 
 
     @Override
@@ -434,6 +463,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
 
+                                try {
+                                    ExifInterface exif = new ExifInterface(file);
+                                    showExif(exif);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
 
                                 System.out.println(currentPicturePath + " currentPicPath");

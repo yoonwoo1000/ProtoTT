@@ -4,7 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/feedmain1fragment_layout"
+        android:id="@+id/feedmain1fragment_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:background="@android:color/background_light"
+
+        ></androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

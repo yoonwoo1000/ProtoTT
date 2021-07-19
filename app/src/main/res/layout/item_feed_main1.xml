@@ -11,14 +11,14 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/ivfeed"
+            android:id="@+id/ivUserProfile"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_margin="7.5dp"
             tools:src="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/tvitemmemo"
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="User Name" />
@@ -58,29 +58,29 @@
     -
 
     <ImageView
-        android:id="@+id/detailviewitem_imageview_content"
+        android:id="@+id/ivFeedPicture"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:scaleType="fitXY" />
 
     <LinearLayout
-    android:layout_height="50dp"
-    android:layout_width="match_parent"
-    android:layout_marginLeft="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="8dp">
 
-    <ImageView
-        android:layout_height="35dp"
-        android:layout_width="35dp"
-        android:id="@+id/ivLike"
-        app:srcCompat="@drawable/ic_baseline_favorite_24"/>
+        <ImageView
+            android:id="@+id/ivLike"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:srcCompat="@drawable/ic_baseline_favorite_24" />
 
-    <ImageView
-        android:layout_height="35dp"
-        android:layout_width="35dp"
-        android:src="@drawable/ic_baseline_chat_24"
-        android:id="@+id/ivMemo"/>
+        <ImageView
+            android:id="@+id/ivMemo"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_baseline_chat_24" />
 
-</LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:layout_height="wrap_content"

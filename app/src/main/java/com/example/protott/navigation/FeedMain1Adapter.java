@@ -53,7 +53,7 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
                                 ContentDTO contentDTO = new ContentDTO();
 
 
-                                for(int i = 0; i<= document.getData().size(); i++)
+                              /*  for(int i = 0; i<= document.getData().size(); i++)
                                 {
                                     contentDTO.setImageUrl(document.get("imageUri").toString());
                                     contentDTO.setTakenDate(document.get("takenDate").toString());
@@ -66,7 +66,7 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
 
 
                                 }
-
+*/
 
 
                             }

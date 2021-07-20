@@ -14,22 +14,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.protott.R;
 import com.example.protott.model.ContentDTO;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.squareup.okhttp.OkHttpClient;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 
 public class Frag2 extends Fragment {
 
     private RecyclerView recyclerView;
     private FeedMain1Adapter adapter;
+    private FirebaseFirestore db;
+
+    void DocSnippets(FirebaseFirestore db) {
+        this.db = db;
+    }
 
     Boolean isFabOpen = true;
 
@@ -40,11 +44,28 @@ public class Frag2 extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.feedmain1fragment_recyclerview);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-
         adapter = new FeedMain1Adapter();
+        db = FirebaseFirestore.getInstance();
+        ArrayList<ContentDTO> contentDTOS = new ArrayList<ContentDTO>();
+
+        db.collection("images")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + document.getData() + "|||||" + document.get("imageUrl"));
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents : ", task.getException());
+                        }
+
+                    }
+                });
 
         adapter.addItem(new ContentDTO());
 
@@ -52,20 +73,14 @@ public class Frag2 extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-
-
-
-
-
-
         Log.e("Frag", "FeedMain1Adapter");
 
         return rootView;
     }
+
     @Override
     public void onResume() {
         super.onResume();
-
 
 
     }

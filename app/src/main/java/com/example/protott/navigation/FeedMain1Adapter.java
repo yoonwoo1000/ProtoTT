@@ -1,6 +1,7 @@
 package com.example.protott.navigation;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.protott.R;
 import com.example.protott.model.ContentDTO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.CustomViewHolder> {
 
     private ArrayList<ContentDTO> contentDTOS = new ArrayList<ContentDTO>();
+    private FirebaseFirestore db =FirebaseFirestore.getInstance();
+
+
+
 
 
     @NonNull
@@ -30,6 +41,41 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View itemView = layoutInflater.inflate(R.layout.item_feed_main1, parent, false);
+
+        db.collection("images")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + document.getData() + "|||||" + document.get("imageUrl").toString());
+                                ContentDTO contentDTO = new ContentDTO();
+
+
+                                for(int i = 0; i<= document.getData().size(); i++)
+                                {
+                                    contentDTO.setImageUrl(document.get("imageUri").toString());
+                                    contentDTO.setTakenDate(document.get("takenDate").toString());
+                                    contentDTO.setExplain(document.get("explain").toString());
+                                    contentDTO.setUid(document.get("uid").toString());
+                                    contentDTO.setUserid(document.get("userid").toString());
+
+                                    setItem(i,contentDTO);
+
+
+
+                                }
+
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents : ", task.getException());
+                        }
+
+                    }
+                });
 
 
         return new CustomViewHolder(itemView);
@@ -43,7 +89,6 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
         Glide.with(holder.itemView)
                 .load(contentDTOS.get(position).getImageUrl())
                 .into(holder.ivFeedPicture);
-
 
         holder.tvUserName.setText(contentDTOS.get(position).getUserid());
         holder.tvLocation.setText(contentDTOS.get(position).getLatitude());

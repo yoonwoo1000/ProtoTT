@@ -1,5 +1,7 @@
 package com.example.protott.model;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ public class ContentDTO {
     private String longitude;
 
     private String takenDate;
+
 
     @Override
     public String toString() {

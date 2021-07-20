@@ -1,21 +1,37 @@
 package com.example.protott;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.protott.model.ContentDTO;
+import com.example.protott.navigation.FeedMain1Adapter;
 import com.example.protott.navigation.Frag1;
 import com.example.protott.navigation.Frag2;
 import com.example.protott.navigation.Frag3;
 import com.example.protott.navigation.Frag4;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
     private Frag4 frag4;
     ImageButton btnFeedUpdate;
 
+    private TextView fName;
+    private RecyclerView pdfRecView;
+    FeedMain1Adapter adapter;
+    ArrayList<ContentDTO> contentDTOS;
+    //List<String> pdfNameList;
+    String folder_name;
+    String pdfName;
+    String pdfUrl;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
 
 
@@ -36,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnFeedUpdate = findViewById(R.id.btnFeedUpdate);
+
+
 
 
         btnFeedUpdate.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void setFrag(int n) {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
@@ -103,5 +132,45 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public static ArrayList<ContentDTO> getAllFromFireStore()
+    {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ArrayList<ContentDTO> contentDTOS = new ArrayList<>();
+
+        db.collection("images")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                String imageUrl = document.get("imageUrl") + "";
+                                String takenDate = document.get("takenDate") + "";
+                                String explain = document.get("explain") + "";
+                                String timestamp = document.get("timestamp") + "";
+                                String uid = document.get("uid") + "";
+                                String userid = document.get("userid") + "";
+                                String latitude = document.get("latitude") + "";
+                                String longitude = document.get("longitude") + "";
+
+                                // I would like to add these items to an array list and return that array list
+
+                            }
+                        }
+                        else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+        return contentDTOS;
+
+
+
     }
 }

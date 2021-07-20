@@ -65,7 +65,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     String latitude;
     String longitude;
-    String takeDate;
+    String takenDate;
 
 
     private static Uri contentUri;  // 사진찍기
@@ -198,9 +198,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
 
     }
+    public void downloadFeed()
+    {
+
+    }
 
     public void uploadFeed() {
-        if (photoUri != null) {
+        if (photoUri != null || contentUri != null) {
 
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -223,8 +227,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                     ContentDTO contentDTO = new ContentDTO();
 
-
-
                     contentDTO.setImageUrl(uri.toString());
 
                     contentDTO.setUid(auth.getCurrentUser().getUid());
@@ -233,14 +235,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                     contentDTO.setUserid(auth.getCurrentUser().getEmail());
 
-
                     contentDTO.setTimestamp(System.currentTimeMillis());
 
                     contentDTO.setLatitude(latitude);
 
                     contentDTO.setLongitude(longitude);
 
-                    contentDTO.setTakenDate(takeDate);
+                    contentDTO.setTakenDate(takenDate);
 
                     firestore.collection("images").document().set(contentDTO);
 
@@ -257,54 +258,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                 }
             });
-        } else if (contentUri != null) {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-            String imageFileName = "JPEG_" + timeStamp + "_,png";
-
-            StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
-            storageReference.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
-
-                @Override
-                public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-
-                    String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-
-                    ContentDTO contentDTO = new ContentDTO();
-
-                    contentDTO.setImageUrl(uri.toString());
-
-                    contentDTO.setUid(auth.getCurrentUser().getUid());
-
-                    contentDTO.setExplain(etMemo.getText().toString());
-
-                    contentDTO.setUserid(auth.getCurrentUser().getEmail());
-
-                    contentDTO.setTimestamp(System.currentTimeMillis());
-
-                    contentDTO.setLatitude(latitude);
-
-                    contentDTO.setLongitude(longitude);
-
-                    contentDTO.setTakenDate(takeDate);
-
-                    firestore.collection("images").document().set(contentDTO);
-
-                    setResult(Activity.RESULT_OK);
-                    finish();
-
-
-                }
-
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(FeedUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
-            });
-        } else {
+        }
+        else {
             Toast.makeText(this, "사진 필요", Toast.LENGTH_SHORT).show();
         }
 
@@ -377,26 +332,30 @@ public class FeedUpdateActivity extends AppCompatActivity {
             int nSize = mManagedCursor.getColumnCount();
 
             while (true) {
-                String result = "";
 
-                String date_taken =
+
+                takenDate =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.DATE_TAKEN)); // 촬영날짜. 1/1000초 단위
-                result += date_taken + "|";
-                String latitude =
+
+                latitude =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.LATITUDE)); // 위도
-                result += latitude + "|";
 
-                String longitude =
+
+                longitude =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.LONGITUDE)); // 경도
-                result += longitude + "|";
 
-             /*   if(latitude != null && !latitude.equals("0") && !longitude.equals("0")) {
+                tvPlace.setText(latitude);
+
+                tvPictureDate.setText(takenDate);
+
+
+              /*  if(latitude != null && !latitude.equals("0") && !longitude.equals("0")) {
                     mTitleArray.add(title + " " + latitude + "," + longitude);
 
                     paths.add(data);
@@ -417,7 +376,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    private void showExif(ExifInterface exif) {
+  /*  private void showExif(ExifInterface exif) {
 
 
         takeDate = getTagString(ExifInterface.TAG_DATETIME, exif);
@@ -433,7 +392,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     private String getTagString(String TAG, ExifInterface exif) {
         return (exif.getAttribute(TAG));
-    }
+    }*/
 
 
     @Override
@@ -463,13 +422,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
 
-                                try {
-                                    ExifInterface exif = new ExifInterface(file);
-                                    showExif(exif);
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                              //  getImageinfo();
 
 
                                 System.out.println(currentPicturePath + " currentPicPath");
@@ -487,6 +440,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
 
+                               // getImageinfo();
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");
 
@@ -522,7 +476,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         //  galleryAddPic();
 
                         btnFeedUpdatePhoto.setImageURI(photoUri);
-
 
                         System.out.println(currentPicturePath + " currentPicPath");
                         System.out.println(photoUri + "photoURI");

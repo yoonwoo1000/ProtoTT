@@ -68,6 +68,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     String takenDate;
 
 
+
     private static Uri contentUri;  // 사진찍기
     private static Uri imageUri;
     private static Uri photoUri; // 앨범
@@ -130,6 +131,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 makeDialog();
+
 
             }
 
@@ -198,12 +200,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
 
     }
-    public void downloadFeed()
-    {
 
-    }
 
     public void uploadFeed() {
+
+        System.out.println(currentPicturePath);
+
+
         if (photoUri != null || contentUri != null) {
 
 
@@ -221,8 +224,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
 
-
                     String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
 
 
                     ContentDTO contentDTO = new ContentDTO();
@@ -258,8 +261,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else {
+        } else {
             Toast.makeText(this, "사진 필요", Toast.LENGTH_SHORT).show();
         }
 
@@ -322,6 +324,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+
     public void getImageinfo() {
         Cursor mManagedCursor;
         ContentResolver contentResolver = getContentResolver();
@@ -376,10 +379,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-  /*  private void showExif(ExifInterface exif) {
+    private void showExif(ExifInterface exif) {
 
-
-        takeDate = getTagString(ExifInterface.TAG_DATETIME, exif);
+        String takeDate = getTagString(ExifInterface.TAG_DATETIME, exif);
 
         tvPictureDate.setText(takeDate);
 
@@ -392,7 +394,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     private String getTagString(String TAG, ExifInterface exif) {
         return (exif.getAttribute(TAG));
-    }*/
+    }
 
 
     @Override
@@ -422,7 +424,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
 
-                              //  getImageinfo();
+                                //  getImageinfo();
 
 
                                 System.out.println(currentPicturePath + " currentPicPath");
@@ -440,7 +442,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 galleryAddPic();
 
-                               // getImageinfo();
+                                // getImageinfo();
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");
 

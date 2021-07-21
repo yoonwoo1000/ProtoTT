@@ -1,13 +1,11 @@
 package com.example.protott.navigation;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,16 +20,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static java.lang.String.valueOf;
 
 public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.CustomViewHolder> {
 
-    private ArrayList<ContentDTO> contentDTOS = new ArrayList<ContentDTO>();
-    private FirebaseFirestore db =FirebaseFirestore.getInstance();
+    private List<ContentDTO> contentDTOS = new ArrayList<ContentDTO>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    ContentDTO contentDTO = new ContentDTO();
 
-
-
+    List<String> imageUriList = new ArrayList<>();
 
 
     @NonNull
@@ -42,65 +42,93 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View itemView = layoutInflater.inflate(R.layout.item_feed_main1, parent, false);
 
-        db.collection("images")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + document.getData() + "|||||" + document.get("imageUrl").toString());
-                                ContentDTO contentDTO = new ContentDTO();
-
-
-                              /*  for(int i = 0; i<= document.getData().size(); i++)
-                                {
-                                    contentDTO.setImageUrl(document.get("imageUri").toString());
-                                    contentDTO.setTakenDate(document.get("takenDate").toString());
-                                    contentDTO.setExplain(document.get("explain").toString());
-                                    contentDTO.setUid(document.get("uid").toString());
-                                    contentDTO.setUserid(document.get("userid").toString());
-
-                                    setItem(i,contentDTO);
+        db = FirebaseFirestore.getInstance();
 
 
 
-                                }
-*/
+//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("images").orderBy("timestamp").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<String> list = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
 
 
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents : ", task.getException());
+                        list.add(document.toString());
+
+                        contentDTO.setImageUrl(document.get("imageUrl").toString());
+
+                        contentDTO.setUid(document.get("uid").toString());
+
+                        contentDTO.setExplain(document.get("explain").toString());
+
+                        contentDTO.setUserid(document.get("userid").toString());
+
+
+
+                        contentDTOS.add(contentDTO);
+
+
+
+
+                        for (int i = 0; i< list.size(); i++)
+                        {
+                            Log.d(TAG,list.get(i));
+
+                            Log.d(TAG,"dkdkdkdkdkdkdkdkdkk" + String.valueOf(contentDTOS.get(i)));
+
+
+
                         }
 
+                        Log.d(TAG, list.toString());
                     }
-                });
+
+
+
+                } else {
+                    Log.d(TAG, "Error getting documents : ", task.getException());
+                }
+
+            }
+        });
+
 
 
         return new CustomViewHolder(itemView);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
-        ContentDTO contentDTO = contentDTOS.get(position);
+        for(int i = 0; i < contentDTOS.size(); i++) {
 
-        Glide.with(holder.itemView)
-                .load(contentDTOS.get(position).getImageUrl())
-                .into(holder.ivFeedPicture);
+            ContentDTO contentDTO = contentDTOS.get(i);
 
-        holder.tvUserName.setText(contentDTOS.get(position).getUserid());
-        holder.tvLocation.setText(contentDTOS.get(position).getLatitude());
-        holder.tvDate.setText(contentDTOS.get(position).getTakenDate());
-        holder.tvPictureMemo.setText(String.valueOf(contentDTOS.get(position).getExplain()));
+            Glide.with(holder.itemView)
+                    .load(contentDTOS.get(i).getImageUrl())
+                    .into(holder.ivFeedPicture);
+
+            holder.tvUserName.setText(contentDTOS.get(i).getUserid());
+            holder.tvLocation.setText(contentDTOS.get(i).getLatitude());
+            holder.tvDate.setText(contentDTOS.get(i).getTakenDate());
+            holder.tvPictureMemo.setText(valueOf(contentDTOS.get(i).getExplain()));
+
+
+
+        }
 
 
     }
 
     @Override
     public int getItemCount() {
-            return contentDTOS.size();
+        return contentDTOS.size();
         //return (arrayList != null ? arrayList.size() : 0);
     }
 
@@ -119,26 +147,24 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
             tvUserName = itemView.findViewById(R.id.tvUserName);
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvDate = itemView.findViewById(R.id.tvDate);
-          tvPictureMemo = itemView.findViewById(R.id.tvPictureMemo);
+            tvPictureMemo = itemView.findViewById(R.id.tvPictureMemo);
         }
     }
 
-    public void addItem(ContentDTO contentDTO)
-    {
+    public void addItem(ContentDTO contentDTO) {
         contentDTOS.add(contentDTO);
     }
-    public void setItems(ArrayList<ContentDTO> contentDTOS)
-    {
+
+    public void setItems(ArrayList<ContentDTO> contentDTOS) {
         this.contentDTOS = contentDTOS;
     }
 
-    public ContentDTO getItem(int position)
-    {
+    public ContentDTO getItem(int position) {
         return contentDTOS.get(position);
     }
-    public  void setItem(int position,ContentDTO contentDTO)
-    {
-        contentDTOS.set(position,contentDTO);
+
+    public void setItem(int position, ContentDTO contentDTO) {
+        contentDTOS.set(position, contentDTO);
     }
 
 }

@@ -16,11 +16,13 @@ import com.example.protott.R;
 import com.example.protott.model.ContentDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -47,25 +49,6 @@ public class Frag2 extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new FeedMain1Adapter();
-        db = FirebaseFirestore.getInstance();
-        ArrayList<ContentDTO> contentDTOS = new ArrayList<ContentDTO>();
-
-        db.collection("images")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + document.getData() + "|||||" + document.get("imageUrl"));
-
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents : ", task.getException());
-                        }
-
-                    }
-                });
 
         adapter.addItem(new ContentDTO());
 

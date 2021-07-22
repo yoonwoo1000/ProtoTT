@@ -6,10 +6,12 @@
      <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.location.gps"/>
+
 
 
 
@@ -21,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProtoTT">
+        android:usesCleartextTraffic="true"
         <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +35,7 @@
         <activity android:name=".FeedUpdateActivity" />
         <activity android:name=".SignupActivity"/>
         <activity android:name=".LoginActivity"/>
-        <activity android:name=".MapsActivity"/>
+
         <activity android:name=".MainActivity" />
    <provider
        android:authorities="com.example.protott"

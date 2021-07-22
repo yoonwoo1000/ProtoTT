@@ -251,7 +251,6 @@ public class FeedUpdateActivity extends AppCompatActivity {
                     setResult(Activity.RESULT_OK);
                     finish();
 
-
                 }
 
             }).addOnFailureListener(new OnFailureListener() {

@@ -1,27 +1,23 @@
 package com.example.protott;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.protott.model.ContentDTO;
-import com.example.protott.navigation.FeedMain1Adapter;
 import com.example.protott.navigation.Frag1;
 import com.example.protott.navigation.Frag2;
 import com.example.protott.navigation.Frag3;
 import com.example.protott.navigation.Frag4;
+import com.example.protott.navigation.FeedMain1Adapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -42,17 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private Frag2 frag2;
     private Frag3 frag3;
     private Frag4 frag4;
+    private FeedMain1Adapter feedMain1Adapter;
     ImageButton btnFeedUpdate;
 
-    private TextView fName;
-    private RecyclerView pdfRecView;
-    FeedMain1Adapter adapter;
-    ArrayList<ContentDTO> contentDTOS;
-    //List<String> pdfNameList;
-    String folder_name;
-    String pdfName;
-    String pdfUrl;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
 
 
 

@@ -1,5 +1,6 @@
 package com.example.protott.navigation;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +18,14 @@ import com.example.protott.model.ContentDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +39,11 @@ public class Frag2 extends Fragment {
     private FeedMain1Adapter adapter;
     private FirebaseFirestore db;
 
-    void DocSnippets(FirebaseFirestore db) {
-        this.db = db;
-    }
 
-    Boolean isFabOpen = true;
+    private ArrayList<ContentDTO> contentDTOS = new ArrayList<>();
+    private ArrayList<String> uriList = new ArrayList<>();
+    ContentDTO contentDTO;
+
 
     @Nullable
 
@@ -46,11 +52,28 @@ public class Frag2 extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.feedmain1fragment_recyclerview);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new FeedMain1Adapter();
+        recyclerView.setHasFixedSize(true);
 
-        adapter.addItem(new ContentDTO());
+
+        db = FirebaseFirestore.getInstance();
+
+
+        db.collection("images").orderBy("timestamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
+
+
+
+
+                contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
+
+
+            }
+        });
+
+        adapter = new FeedMain1Adapter(contentDTOS);
 
 
         recyclerView.setAdapter(adapter);
@@ -59,6 +82,14 @@ public class Frag2 extends Fragment {
         Log.e("Frag", "FeedMain1Adapter");
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated( View view, Bundle savedInstanceState) {
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.feedmain1fragment_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager((view.getContext())));
+
+
     }
 
     @Override

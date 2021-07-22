@@ -38,11 +38,14 @@ public class Frag2 extends Fragment {
     private RecyclerView recyclerView;
     private FeedMain1Adapter adapter;
     private FirebaseFirestore db;
+    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+    private StorageReference storageReference = firebaseStorage.getReference();
 
 
     private ArrayList<ContentDTO> contentDTOS = new ArrayList<>();
     private ArrayList<String> uriList = new ArrayList<>();
     ContentDTO contentDTO;
+
 
 
     @Nullable
@@ -65,6 +68,7 @@ public class Frag2 extends Fragment {
             public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
 
 
+                Log.d(TAG,"uriuriuriuriuriuri" + uriList.toString());
 
 
                 contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
@@ -72,6 +76,7 @@ public class Frag2 extends Fragment {
 
             }
         });
+
 
         adapter = new FeedMain1Adapter(contentDTOS);
 

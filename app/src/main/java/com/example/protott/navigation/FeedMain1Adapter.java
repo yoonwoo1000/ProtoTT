@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.protott.R;
 import com.example.protott.model.ContentDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -67,6 +68,7 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
         TextView tvLocation;
         TextView tvDate;
         TextView tvPictureMemo;
+        TextView tvLikeCounter;
 
 
         public CustomViewHolder(@NonNull View itemView) {
@@ -76,6 +78,7 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
             this.tvLocation = itemView.findViewById(R.id.tvLocation);
             this.tvDate = itemView.findViewById(R.id.tvDate);
             this.tvPictureMemo = itemView.findViewById(R.id.tvPictureMemo);
+            this.tvLikeCounter = itemView.findViewById(R.id.tvLikeCounter);
 
 
         }
@@ -85,33 +88,37 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
+        Log.d(TAG,"CACACACACACACACACACACA" + contentDTOS.get(position).getImageUrl().toString());
 
-        storageReference.child(contentDTOS.get(position).getImageUrl().toString().trim())
-                .getDownloadUrl()
-                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG,"TASK UriTASK UriTASK UriTASK Uri" + storageUri.toString());
 
-                            Glide.with(holder.itemView)
-                                    .load(storageUri)
-                                    .centerCrop()
-                                    .into(holder.ivFeedPicture);
-                        }
-                        else {
 
-                        }
+     /* storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+          @Override
+          public void onComplete( Task<Uri> task) {
 
-                    }
-                });
+              if(task.isSuccessful())
+              {
+                  Glide.with(holder.itemView)
+                .load(task.getResult())
+                .into(holder.ivFeedPicture);
+              }
+
+          }
+      });*/
+
+
+
+
 
 
        /* Glide.with(holder.itemView)
                 .load(String.valueOf(contentDTOS.get(position).getImageUrl()))
                 .into(holder.ivFeedPicture);*/
-
+        holder.tvDate.setText("2021.07.22");
         holder.tvUserName.setText(contentDTOS.get(position).getUserid());
+        holder.tvLikeCounter.setText("좋아요 0개");
+
+
 
         holder.tvDate.setText(contentDTOS.get(position).getTakenDate());
         holder.tvPictureMemo.setText(contentDTOS.get(position).getExplain());

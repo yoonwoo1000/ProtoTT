@@ -209,6 +209,12 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         if (photoUri != null || contentUri != null) {
 
+            if(photoUri == null)
+            {
+                photoUri = contentUri;
+            }
+
+
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 

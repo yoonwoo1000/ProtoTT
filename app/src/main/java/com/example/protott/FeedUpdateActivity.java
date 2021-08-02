@@ -230,9 +230,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
 
+
+
                     String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-
+                    Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + uri);
 
                     ContentDTO contentDTO = new ContentDTO();
 
@@ -318,6 +320,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
         File galleryFile = new File(currentPicturePath);
+
 
         contentUri = Uri.fromFile(galleryFile);
 
@@ -468,6 +471,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 if (data.getData() != null) {
 
                     try {
+
 
 
                         //File albumFile = null;

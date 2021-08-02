@@ -58,6 +58,7 @@ public class Frag2 extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
 
 
         db = FirebaseFirestore.getInstance();
@@ -81,7 +82,6 @@ public class Frag2 extends Fragment {
         adapter = new FeedMain1Adapter(contentDTOS);
 
 
-        recyclerView.setAdapter(adapter);
 
 
         Log.e("Frag", "FeedMain1Adapter");

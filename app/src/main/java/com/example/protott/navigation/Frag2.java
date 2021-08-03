@@ -43,7 +43,7 @@ public class Frag2 extends Fragment {
 
 
     private ArrayList<ContentDTO> contentDTOS = new ArrayList<>();
-    private ArrayList<String> uriList = new ArrayList<>();
+    private ArrayList<String> uidList = new ArrayList<>();
     ContentDTO contentDTO;
 
 
@@ -52,14 +52,6 @@ public class Frag2 extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
-
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.feedmain1fragment_recyclerview);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-
 
         db = FirebaseFirestore.getInstance();
 
@@ -69,15 +61,23 @@ public class Frag2 extends Fragment {
             public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
 
 
-                Log.d(TAG,"uriuriuriuriuriuri" + uriList.toString());
-
-
                 contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
 
 
             }
         });
 
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
+
+
+
+
+
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.feedmain1fragment_recyclerview);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
 
         adapter = new FeedMain1Adapter(contentDTOS);
 

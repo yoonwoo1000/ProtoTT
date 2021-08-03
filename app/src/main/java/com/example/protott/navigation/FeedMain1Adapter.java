@@ -42,6 +42,7 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
     }
 
 
+
     @NonNull
     @Override
 
@@ -89,27 +90,6 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
 
         Log.d(TAG,"CACACACACACACACACACACA" + contentDTOS.get(position).getImageUrl().toString());
-
-
-
-     /* storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-          @Override
-          public void onComplete( Task<Uri> task) {
-
-              if(task.isSuccessful())
-              {
-                  Glide.with(holder.itemView)
-                .load(task.getResult())
-                .into(holder.ivFeedPicture);
-              }
-
-          }
-      });*/
-
-
-
-
-
 
        /* Glide.with(holder.itemView)
                 .load(String.valueOf(contentDTOS.get(position).getImageUrl()))

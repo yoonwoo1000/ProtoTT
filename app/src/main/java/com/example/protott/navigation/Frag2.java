@@ -60,6 +60,9 @@ public class Frag2 extends Fragment {
             @Override
             public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
 
+                contentDTOS.clear();
+                uidList.clear();
+
 
                 contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
 
@@ -102,6 +105,34 @@ public class Frag2 extends Fragment {
         super.onResume();
 
 
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

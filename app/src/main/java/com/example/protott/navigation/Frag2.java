@@ -43,7 +43,7 @@ public class Frag2 extends Fragment {
 
 
     private ArrayList<ContentDTO> contentDTOS = new ArrayList<>();
-    private ArrayList<String> uriList = new ArrayList<>();
+    private ArrayList<String> uidList = new ArrayList<>();
     ContentDTO contentDTO;
 
 
@@ -52,13 +52,6 @@ public class Frag2 extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
-
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.feedmain1fragment_recyclerview);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-
 
         db = FirebaseFirestore.getInstance();
 
@@ -67,8 +60,8 @@ public class Frag2 extends Fragment {
             @Override
             public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
 
-
-                Log.d(TAG,"uriuriuriuriuriuri" + uriList.toString());
+                contentDTOS.clear();
+                uidList.clear();
 
 
                 contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
@@ -77,11 +70,21 @@ public class Frag2 extends Fragment {
             }
         });
 
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
+
+
+
+
+
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.feedmain1fragment_recyclerview);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
 
         adapter = new FeedMain1Adapter(contentDTOS);
 
 
-        recyclerView.setAdapter(adapter);
 
 
         Log.e("Frag", "FeedMain1Adapter");
@@ -102,6 +105,34 @@ public class Frag2 extends Fragment {
         super.onResume();
 
 
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

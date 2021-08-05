@@ -3,11 +3,13 @@ package com.example.protott;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -38,9 +40,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import io.grpc.Metadata;
 
 
 public class FeedUpdateActivity extends AppCompatActivity {
@@ -61,6 +66,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     String latitude;
     String longitude;
     String takenDate;
+
 
 
     private static Uri contentUri;  // 사진찍기
@@ -111,26 +117,42 @@ public class FeedUpdateActivity extends AppCompatActivity {
         btnFeedUpdateCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 uploadFeed();
+
+
             }
         });
+
 
         btnFeedUpdatePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 makeDialog();
+
+
             }
+
+
         });
+
+
     }
+
 
     private void makeDialog() // 다이어 로그 만들기
     {
         AlertDialog.Builder dialog;
+
         DialogInterface.OnClickListener takePictureListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 takePicture();
                 Toast.makeText(FeedUpdateActivity.this, "사진찍기", Toast.LENGTH_SHORT).show();
+
+
             }
         };
         DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
@@ -172,27 +194,45 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(intent, REQUEST_FROM_CAMERA);
             }
+
+
         }
+
+
     }
+
 
     public void uploadFeed() {
 
         System.out.println(currentPicturePath);
 
+
         if (photoUri != null || contentUri != null) {
+
+            if(photoUri == null)
+            {
+                photoUri = contentUri;
+            }
+
+
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
             String imageFileName = "JPEG_" + timeStamp + "_,png";
 
+
             StorageReference storageReference = storage.getReference().child("images").child(imageFileName);
 
             storageReference.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
+
                 @Override
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
+
                     String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+                    Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + uri);
 
                     ContentDTO contentDTO = new ContentDTO();
 
@@ -232,7 +272,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+
     public File createImageFile() throws IOException {
+
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -243,17 +285,22 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 storageDir
         );
 
+
         System.out.println(image + "image");
         System.out.println(currentPicturePath + " currentPicPath");
         System.out.println(photoUri + "photoURI");
+
 
         currentPicturePath = image.getAbsolutePath();
         return image;
 
     }
 
+
     public void takeAlbum() // 앨범에서 이미지 가져오기
+
     {
+
 
         Intent intent = new Intent(Intent.ACTION_PICK);
 
@@ -265,11 +312,13 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+
     public void galleryAddPic() {
 
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
         File galleryFile = new File(currentPicturePath);
+
 
         contentUri = Uri.fromFile(galleryFile);
 
@@ -280,6 +329,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
         Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
     }
+
 
     public void getImageinfo() {
         Cursor mManagedCursor;
@@ -292,6 +342,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
             while (true) {
 
+
                 takenDate =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
@@ -302,6 +353,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 mManagedCursor.getColumnIndex(
                                         MediaStore.Images.ImageColumns.LATITUDE)); // 위도
 
+
                 longitude =
                         mManagedCursor.getString(
                                 mManagedCursor.getColumnIndex(
@@ -310,6 +362,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 tvPlace.setText(latitude);
 
                 tvPictureDate.setText(takenDate);
+
 
               /*  if(latitude != null && !latitude.equals("0") && !longitude.equals("0")) {
                     mTitleArray.add(title + " " + latitude + "," + longitude);
@@ -325,8 +378,11 @@ public class FeedUpdateActivity extends AppCompatActivity {
                 {
                     mManagedCursor.moveToNext();
                 }*/
+
             }
+
         }
+
     }
 
     private void showExif(ExifInterface exif) {
@@ -345,6 +401,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     private String getTagString(String TAG, ExifInterface exif) {
         return (exif.getAttribute(TAG));
     }
+
 
     @Override
 
@@ -375,8 +432,10 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                                 //  getImageinfo();
 
+
                                 System.out.println(currentPicturePath + " currentPicPath");
                                 System.out.println(photoUri + "photoURI");
+
 
                             }
                         } catch (IOException e) {
@@ -397,23 +456,30 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                     }
+
                 }
                 break;
             }
+
             case PICK_FROM_ALBUM: {
+
 
                 if (data.getData() != null) {
 
                     try {
 
+
                         //File albumFile = null;
 
                         // albumFile = createImageFile();
 
+
                         photoUri = data.getData();
 
                         //  albumUri = Uri.fromFile(albumFile);
+
 
                         //  galleryAddPic();
 
@@ -422,6 +488,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         System.out.println(currentPicturePath + " currentPicPath");
                         System.out.println(photoUri + "photoURI");
 
+
                         //cropImage();
 
                     } catch (Exception e) {
@@ -429,7 +496,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
                         e.printStackTrace();
 
                         Log.v("알림", "앨범에서 가져오기 에러");
+
                     }
+
                 }
                 break;
             }

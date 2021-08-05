@@ -11,6 +11,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.protott.navigation.FeedMain1Adapter;
+import com.example.protott.navigation.Frag1;
+import com.example.protott.navigation.Frag3;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -126,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (user != null) {
             Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, Frag3.class));
         }
 
     }

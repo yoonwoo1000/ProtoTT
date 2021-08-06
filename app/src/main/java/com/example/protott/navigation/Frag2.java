@@ -16,21 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.protott.R;
 import com.example.protott.model.ContentDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static android.content.ContentValues.TAG;
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 
 public class Frag2 extends Fragment {
@@ -39,7 +37,7 @@ public class Frag2 extends Fragment {
     private FeedMain1Adapter adapter;
     private FirebaseFirestore db;
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-    private StorageReference storageReference = firebaseStorage.getReference();
+    private StorageReference storageReference = firebaseStorage.getReference().child("gs://protott.appspot.com/images");
 
 
     private ArrayList<ContentDTO> contentDTOS = new ArrayList<>();
@@ -59,9 +57,16 @@ public class Frag2 extends Fragment {
         db.collection("images").orderBy("timestamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
+                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        storageReference.listAll();
+                        uri.toString();
+                        uidList.add(uri.toString());
+                        Log.d("ASDAFGQWEFGEWQFJNSA", String.valueOf(uidList));
 
-                contentDTOS.clear();
-                uidList.clear();
+                    }
+                });
 
 
                 contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
@@ -69,6 +74,8 @@ public class Frag2 extends Fragment {
 
             }
         });
+
+
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_feed_main1, container, false);
 
@@ -97,49 +104,38 @@ public class Frag2 extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.feedmain1fragment_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager((view.getContext())));
 
+        storageReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                int i = 1;
+
+
+                for(StorageReference item : listResult.getItems())
+                {
+                    item.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(Task<Uri> task) {
+                            if(task.isSuccessful())
+                            {
+                                Log.d("asDDSADASDSADGQEDWQAFDQDQD", task.getResult().toString());
+
+
+                            }
+
+                        }
+                    });
+
+
+                }
+
+            }
+        });
+
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
 
 
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
 
 
 }

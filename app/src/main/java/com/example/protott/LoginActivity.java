@@ -130,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null) {
             Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, Frag3.class));
+
         }
 
     }

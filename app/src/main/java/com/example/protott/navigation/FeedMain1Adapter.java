@@ -91,9 +91,9 @@ public class FeedMain1Adapter extends RecyclerView.Adapter<FeedMain1Adapter.Cust
 
         Log.d(TAG,"CACACACACACACACACACACA" + contentDTOS.get(position).getImageUrl().toString());
 
-       /* Glide.with(holder.itemView)
-                .load(String.valueOf(contentDTOS.get(position).getImageUrl()))
-                .into(holder.ivFeedPicture);*/
+        Glide.with(holder.itemView)
+                .load(contentDTOS.get(position).getImageUrl())
+                .into(holder.ivFeedPicture);
         holder.tvDate.setText("2021.07.22");
         holder.tvUserName.setText(contentDTOS.get(position).getUserid());
         holder.tvLikeCounter.setText("좋아요 0개");

@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.protott.model.ContentDTO;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,7 +79,8 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     FirebaseFirestore firestore;
-
+    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+    private StorageReference storageReference = firebaseStorage.getReference();
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -228,34 +230,41 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + uri);
+
+                            ContentDTO contentDTO = new ContentDTO();
+
+                            contentDTO.setImageUrl(uri.toString());
+
+                            contentDTO.setUid(auth.getCurrentUser().getUid());
+
+                            contentDTO.setExplain(etMemo.getText().toString());
+
+                            contentDTO.setUserid(auth.getCurrentUser().getEmail());
+
+                            contentDTO.setTimestamp(System.currentTimeMillis());
+
+                            contentDTO.setLatitude(latitude);
+
+                            contentDTO.setLongitude(longitude);
+
+                            contentDTO.setTakenDate(takenDate);
+
+                            firestore.collection("images").document().set(contentDTO);
+
+                            setResult(Activity.RESULT_OK);
+                            finish();
+
+
+                        }
+                    });
 
 
                     String uri = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                    Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + uri);
-
-                    ContentDTO contentDTO = new ContentDTO();
-
-                    contentDTO.setImageUrl(uri.toString());
-
-                    contentDTO.setUid(auth.getCurrentUser().getUid());
-
-                    contentDTO.setExplain(etMemo.getText().toString());
-
-                    contentDTO.setUserid(auth.getCurrentUser().getEmail());
-
-                    contentDTO.setTimestamp(System.currentTimeMillis());
-
-                    contentDTO.setLatitude(latitude);
-
-                    contentDTO.setLongitude(longitude);
-
-                    contentDTO.setTakenDate(takenDate);
-
-                    firestore.collection("images").document().set(contentDTO);
-
-                    setResult(Activity.RESULT_OK);
-                    finish();
 
                 }
 
@@ -427,8 +436,10 @@ public class FeedUpdateActivity extends AppCompatActivity {
                             bitmap = ImageDecoder.decodeBitmap(source);
                             if (bitmap != null) {
 
-                                btnFeedUpdatePhoto.setImageBitmap(bitmap);
+                               // btnFeedUpdatePhoto.setImageBitmap(bitmap);
+                                Glide.with(this).load(bitmap).into(btnFeedUpdatePhoto);
                                 galleryAddPic();
+
 
                                 //  getImageinfo();
 

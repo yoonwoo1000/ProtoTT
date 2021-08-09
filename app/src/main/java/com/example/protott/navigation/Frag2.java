@@ -57,17 +57,6 @@ public class Frag2 extends Fragment {
         db.collection("images").orderBy("timestamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot value, FirebaseFirestoreException error) {
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        storageReference.listAll();
-                        uri.toString();
-                        uidList.add(uri.toString());
-                        Log.d("ASDAFGQWEFGEWQFJNSA", String.valueOf(uidList));
-
-                    }
-                });
-
 
                 contentDTOS = (ArrayList<ContentDTO>) value.toObjects(ContentDTO.class);
 
@@ -104,32 +93,7 @@ public class Frag2 extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.feedmain1fragment_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager((view.getContext())));
 
-        storageReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-            @Override
-            public void onSuccess(ListResult listResult) {
-                int i = 1;
 
-
-                for(StorageReference item : listResult.getItems())
-                {
-                    item.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(Task<Uri> task) {
-                            if(task.isSuccessful())
-                            {
-                                Log.d("asDDSADASDSADGQEDWQAFDQDQD", task.getResult().toString());
-
-
-                            }
-
-                        }
-                    });
-
-
-                }
-
-            }
-        });
 
 
     }

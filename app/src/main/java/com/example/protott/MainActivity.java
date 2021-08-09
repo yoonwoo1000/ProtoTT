@@ -1,10 +1,12 @@
 package com.example.protott;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -19,11 +21,14 @@ import com.example.protott.navigation.Frag3;
 import com.example.protott.navigation.Frag4;
 import com.example.protott.navigation.FeedMain1Adapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -40,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
     private Frag4 frag4;
     private FeedMain1Adapter feedMain1Adapter;
     ImageButton btnFeedUpdate;
+    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+    private StorageReference storageReference = firebaseStorage.getReference().child("gs://protott.appspot.com/images");
+    private ArrayList<String> uidList = new ArrayList<>();
+
+
+    Button btnStop;
 
 
 
@@ -52,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnFeedUpdate = findViewById(R.id.btnFeedUpdate);
+
+
+
+
 
 
 

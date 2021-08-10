@@ -3,13 +3,11 @@ package com.example.protott;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -19,6 +17,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -41,12 +40,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import io.grpc.Metadata;
 
 
 public class FeedUpdateActivity extends AppCompatActivity {
@@ -69,11 +65,14 @@ public class FeedUpdateActivity extends AppCompatActivity {
     String takenDate;
 
 
-
     private static Uri contentUri;  // 사진찍기
     private static Uri imageUri;
     private static Uri photoUri; // 앨범
     private static Uri albumUri;
+
+
+    EditText etTest;
+    Button btnTest;
 
     FirebaseStorage storage;
 
@@ -81,6 +80,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private StorageReference storageReference = firebaseStorage.getReference();
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -103,6 +103,50 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         tvPictureDate = findViewById(R.id.tvPictureDate);
         tvPlace = findViewById(R.id.tvPlace);
+
+        btnTest = findViewById(R.id.btnTest);
+        etTest = findViewById(R.id.etTest);
+
+
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (photoUri != null || contentUri != null) {
+
+                    if (contentUri == null) {
+                        photoUri = contentUri;
+                    }
+
+                    String testName = getPathFromUri(contentUri);
+
+                    Log.e("fewbfgwhifhnwdfw", String.valueOf(contentUri));
+
+                    Log.e("AFASGQEFSAGSGDS", currentPicturePath);
+
+                    //String test = currentPicturePath;
+
+
+
+
+
+                    try {
+                        ExifInterface exifInterface = new ExifInterface(testName);
+                        showExif(exifInterface);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else
+                    {
+                        Toast.makeText(FeedUpdateActivity.this, "URIRUIRUIRURIURUIRUIRUIRUI", Toast.LENGTH_SHORT).show();
+                    }
+
+
+            }
+        });
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // 사진 권한 설정
@@ -203,6 +247,44 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
+    public String getPathFromUri(Uri contentUri) {
+
+        String[] proj = { MediaStore.Images.Media.DATA };
+
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+
+        Uri uri = Uri.fromFile(new File(path));
+
+        cursor.close();
+
+        return path;
+    }
+
+    private void showExif(ExifInterface exifInterface) {
+
+        String myAttribute = "[Exif information] \n\n";
+
+        myAttribute += getTagString(ExifInterface.TAG_DATETIME, exifInterface);
+
+
+        myAttribute += getTagString(ExifInterface.TAG_GPS_LONGITUDE, exifInterface);
+        myAttribute += getTagString(ExifInterface.TAG_GPS_LONGITUDE_REF, exifInterface);
+
+        myAttribute += getTagString(ExifInterface.TAG_GPS_LATITUDE, exifInterface);
+        myAttribute += getTagString(ExifInterface.TAG_GPS_LATITUDE_REF, exifInterface);
+
+
+        etTest.setText(myAttribute);
+
+
+    }
+
+    private String getTagString(String tag, ExifInterface exifInterface) {
+        return (tag + " : " + exifInterface.getAttribute(tag) + "\n");
+    }
+
 
     public void uploadFeed() {
 
@@ -211,11 +293,9 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
         if (photoUri != null || contentUri != null) {
 
-            if(photoUri == null)
-            {
+            if (photoUri == null) {
                 photoUri = contentUri;
             }
-
 
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -233,7 +313,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + uri);
+                            Log.d(TAG, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + uri);
 
                             ContentDTO contentDTO = new ContentDTO();
 
@@ -394,7 +474,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
     }
 
-    private void showExif(ExifInterface exif) {
+/*    private void showExif(ExifInterface exif) {
 
         String takeDate = getTagString(ExifInterface.TAG_DATETIME, exif);
 
@@ -410,7 +490,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
     private String getTagString(String TAG, ExifInterface exif) {
         return (exif.getAttribute(TAG));
     }
-
+*/
 
     @Override
 
@@ -436,7 +516,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                             bitmap = ImageDecoder.decodeBitmap(source);
                             if (bitmap != null) {
 
-                               // btnFeedUpdatePhoto.setImageBitmap(bitmap);
+                                // btnFeedUpdatePhoto.setImageBitmap(bitmap);
                                 Glide.with(this).load(bitmap).into(btnFeedUpdatePhoto);
                                 galleryAddPic();
 
@@ -444,7 +524,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 //  getImageinfo();
 
 
-                                System.out.println(currentPicturePath + " currentPicPath");
+                                System.out.println(currentPicturePath + " currentPicPath onActivityResultonActivityResult");
                                 System.out.println(photoUri + "photoURI");
 
 
@@ -460,7 +540,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
                                 galleryAddPic();
 
                                 // getImageinfo();
-                                System.out.println(currentPicturePath + " currentPicPath");
+                                System.out.println(currentPicturePath + " currentPicPathonActivityResultonActivityResult");
                                 System.out.println(photoUri + "photoURI");
 
                             }
@@ -496,7 +576,7 @@ public class FeedUpdateActivity extends AppCompatActivity {
 
                         btnFeedUpdatePhoto.setImageURI(photoUri);
 
-                        System.out.println(currentPicturePath + " currentPicPath");
+                        System.out.println(currentPicturePath + " currentPicPath onActivityResultonActivityResult");
                         System.out.println(photoUri + "photoURI");
 
 

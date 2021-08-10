@@ -25,7 +25,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProtoTT">
-        <activity android:name=".Password_resetActivity"></activity>
+        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".Password_resetActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".MemberInitActivity" />
 

@@ -39,5 +39,13 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <ImageButton
+            android:id="@+id/btnSetting"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@android:drawable/ic_dialog_dialer" />
+
     </RelativeLayout>
 </androidx.appcompat.widget.Toolbar>

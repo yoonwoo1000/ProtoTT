@@ -40,6 +40,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        FirebaseUser user = mAuth.getCurrentUser();
+
+
 
         etId = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -48,6 +51,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
+
+        if(user != null)    //로그인을 했던 적이 있으면 메인으로 바로 넘어간다.
+        {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
 
 
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (user != null) {
             Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, Frag3.class));
+            startActivity(new Intent(this, MainActivity.class));
 
         }
 

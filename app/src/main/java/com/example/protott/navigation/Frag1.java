@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.protott.R;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -23,13 +24,7 @@ import java.util.ArrayList;
 public class Frag1 extends Fragment {
     private View view;
 
-    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-    private StorageReference storageReference = firebaseStorage.getReference().child("gs://protott.appspot.com/images");
-    private ArrayList<String> uidList = new ArrayList<>();
 
-
-    Button btnStart;
-    final int GET_FALLERY_IMAGE = 200;
 
 
     @Nullable
@@ -42,6 +37,8 @@ public class Frag1 extends Fragment {
 
         return view;
     }
+
+
 
 
 }

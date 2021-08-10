@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private Frag4 frag4;
     private FeedMain1Adapter feedMain1Adapter;
     ImageButton btnFeedUpdate;
+    ImageButton btnSetting;
+
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private StorageReference storageReference = firebaseStorage.getReference().child("gs://protott.appspot.com/images");
     private ArrayList<String> uidList = new ArrayList<>();
@@ -63,6 +65,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnFeedUpdate = findViewById(R.id.btnFeedUpdate);
+        btnSetting = findViewById(R.id.btnSetting);
+
+
+
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 
